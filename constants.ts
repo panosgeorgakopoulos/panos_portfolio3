@@ -3,7 +3,7 @@ import { Experience, Project, Skill, ResumeData } from './types';
 export const RESUME_DATA: ResumeData = {
   name: "Panos Georgakopoulos",
   title: "CS Student & Aspiring Software Engineer",
-  summary: "I build the bridge between human creativity and artificial intelligence. With over 8 years of experience in full-stack engineering and a deep focus on Generative AI, I craft digital experiences that feel like magic.",
+  summary: "Computer Science student with strong full-stack and AI/ML skills, experienced in developing ML models, web applications, and interactive software, with hands-on hackathon and professional experience.",
   location: "Nikea, Attica, Greece",
   email: "pangegeorg@gmail.com",
   socials: {
