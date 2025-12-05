@@ -9,7 +9,7 @@ export const RESUME_DATA: ResumeData = {
   socials: {
     github: "github.com/panosgeorgakopoulos",
     linkedin: "linkedin.com/in/panagiotis-sergios-georgakopoulos/",
-    twitter: "https://x.com/panosgeorgakop7"
+    twitter: "x.com/panosgeorgakop7"
   }
 };
 
