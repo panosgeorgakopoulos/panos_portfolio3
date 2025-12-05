@@ -60,7 +60,7 @@ export const PROJECTS: Project[] = [
     title: "Marine Heatwave AI",
     description:
       "Machine learning model developed during the French Hackathon to detect and predict marine heatwaves using ocean temperature and depth-layer climate datasets.",
-    imageUrl: "https://picsum.photos/seed/ocean/600/400",
+    imageUrl: "https://www.marineheatwaves.org/uploads/1/1/0/5/110558923/mhw-definition-wcats_orig.png",
     tags: ["Python", "ML", "Xarray", "Climate Data"],
     link: "https://github.com/panosgeorgakopoulos"
   },
@@ -69,7 +69,7 @@ export const PROJECTS: Project[] = [
     title: "JavaBasicsWeb",
     description:
       "A complete Java web application built with Maven, Servlets, JSP, and Tomcat, featuring full CRUD operations and a MySQL database backend.",
-    imageUrl: "https://picsum.photos/seed/code/600/400",
+    imageUrl: "https://www.startechup.com/wp-content/uploads/java-logo.png",
     tags: ["Java", "Maven", "Tomcat", "MySQL"],
     link: "https://github.com/panosgeorgakopoulos"
   },
@@ -78,7 +78,7 @@ export const PROJECTS: Project[] = [
     title: "Battleship (WinForms)",
     description:
       "A classic Battleship game built in C# using Windows Forms, featuring grid-based gameplay, game logic, and a structured UI.",
-    imageUrl: "https://picsum.photos/seed/game/600/400",
+    imageUrl: "https://playpager.com/images/1x1/battleship-1x1.jpg",
     tags: ["C#", "Windows Forms", "Game Dev"],
     link: "https://github.com/panosgeorgakopoulos"
   }
