@@ -27,7 +27,7 @@ export const EXPERIENCES: Experience[] = [
     id: "2",
     role: "Software Developer",
     company: "Department of Informatics, University",
-    period: "2024 - 2025",
+    period: "2024 - present",
     description:
       "Developed a complete Java web application (JavaBasicsWeb) using Servlets, JSP, and a MySQL backend. Implemented authentication, CRUD operations, database design, and deployed the system on Apache Tomcat.",
     techStack: ["Java", "Maven", "Tomcat", "MySQL", "HTML/CSS"]
