@@ -117,7 +117,7 @@ const Hero: React.FC = () => {
           <div className="space-y-8 animate-fade-in-up relative z-20">
             <div className="flex items-center gap-3">
                <div className="h-[1px] w-12 bg-neon-cyan shadow-[0_0_10px_#00f0ff]"></div>
-               <span className="text-neon-cyan font-mono text-xs tracking-[0.2em] uppercase">System Online</span>
+               <span className="text-neon-cyan font-mono text-xs tracking-[0.2em] uppercase">Welcome</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-8xl font-display font-light leading-[0.9] tracking-tighter">
