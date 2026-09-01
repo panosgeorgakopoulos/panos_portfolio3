@@ -1,12 +1,13 @@
 {
-  "name": "panos-portfolio-premium",
+  "name": "panos-portfolio",
   "private": true,
-  "homepage": "https://panosgeorgakopoulos.github.io/panos_portfolio3",
+  "homepage": "https://panosgeorgakopoulos.gr",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run typecheck && vite build",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
@@ -14,14 +15,16 @@
   "dependencies": {
     "lucide-react": "^0.556.0",
     "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "recharts": "^3.5.1"
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "gh-pages": "^6.3.0",
+    "tailwindcss": "^4.3.3",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
-  }
+  },
+  "description": "Personal portfolio of Panagiotis Sergios Georgakopoulos."
 }

@@ -1,85 +1,232 @@
-import { Experience, Project, Skill, ResumeData } from './types';
+/**
+ * Single source of truth for all site content.
+ *
+ * Transcribed from Georgakopoulos_CV.docx. When the CV changes, change this
+ * file — components read from it and should never hard-code copy.
+ */
+import type {
+  Certification,
+  EducationEntry,
+  Experience,
+  LanguageEntry,
+  Project,
+  ResumeData,
+  SkillGroup,
+  Stat,
+} from './types';
 
 export const RESUME_DATA: ResumeData = {
-  name: "Panos Georgakopoulos",
-  title: "CS Student & Aspiring Software Engineer",
-  summary: "Computer Science student with strong full-stack and AI/ML skills, experienced in developing ML models, web applications, and interactive software, with hands-on hackathon and professional experience.",
-  location: "Nikea, Attica, Greece",
-  email: "pangegeorg@gmail.com",
+  name: 'Panos Georgakopoulos',
+  fullName: 'Panagiotis Sergios Georgakopoulos',
+  title: 'Software Engineer · Applied AI',
+  tagline: 'Backend systems, machine learning and the AI products built on top of them.',
+  summary:
+    'Fourth-year Computer Science student at the University of Piraeus (GPA 8.0/10 · 185 ECTS · 37 of 37 courses passed) working in software engineering and applied AI — backend services, data pipelines and the machine-learning and LLM systems that sit on them. My current project is an AI laytime and demurrage engine for dry bulk chartering, which has also given me working command of charter party terms, Statements of Facts and voyage operations.',
+  location: 'Athens, Greece',
+  email: 'pangegeorg@gmail.com',
+  phone: '+30 694 716 5007',
+  availability:
+    'Seeking a software engineering, AI/ML, data or product engineering internship — any industry.',
+  availabilityBadge: 'Open to internships',
+  availabilityNote: 'Maritime software is where I work today, not where I am limited to.',
   socials: {
-    github: "github.com/panosgeorgakopoulos",
-    linkedin: "linkedin.com/in/panagiotis-sergios-georgakopoulos/",
-    twitter: "x.com/panosgeorgakop7"
-  }
+    github: 'https://github.com/panosgeorgakopoulos',
+    linkedin: 'https://linkedin.com/in/panosgeorgakopoulos',
+    x: 'https://x.com/panosgeorgakop7',
+    website: 'https://panosgeorgakopoulos.gr',
+  },
 };
+
+/** Headline figures. Every value here must be traceable to the CV. */
+export const STATS: Stat[] = [
+  { value: '8.0', label: 'GPA / 10', accent: 'cyan' },
+  { value: '185', label: 'ECTS earned', accent: 'purple' },
+  { value: '37/37', label: 'Courses passed', accent: 'green' },
+  { value: '3', label: 'Languages', accent: 'cyan' },
+];
 
 export const EXPERIENCES: Experience[] = [
   {
-    id: "1",
-    role: "Machine Learning Engineer",
-    company: "Institut Français / French Hackathon",
-    period: "2025",
-    description:
-      "Developed an ML model for predicting marine heatwaves using multi-year ocean temperature datasets. Conducted data cleaning, preprocessing, anomaly detection, and trained predictive algorithms tailored to climate patterns.",
-    techStack: ["Python", "Xarray", "NumPy", "Pandas", "Machine Learning"]
+    id: 'laygrounded',
+    role: 'Founder & Lead Engineer',
+    company: 'LayGrounded',
+    period: 'Jul 2026 — Present',
+    subtitle: 'AI laytime & demurrage claims engine for dry bulk chartering',
+    current: true,
+    bullets: [
+      'Shipped a vision-language document pipeline that extracts port events from PDF Statements of Facts as editable, source-traceable suggestions, with schema-validated output and automatic model fallback for resilience.',
+      'Implemented a deterministic, dependency-pure rules engine covering GENCON 94 and ASBATANKVOY — NOR validity, timezone-aware SHEX/SSHEX exclusions, weather and shifting exceptions, once-on-demurrage — published as a standalone open-source package and reproducible under counterparty scrutiny.',
+      'Architected the full multi-tenant stack solo (RLS-enforced tenancy, Dockerised production build), adding clause flagging by severity, time-bar tracking, sensitivity analysis, and LLM-drafted claim correspondence with source citations.',
+      'Extending into independent verification of claimed facts — weather archive cross-checks, AIS vessel movement, and sanctions screening — so each line of a claim is backed by third-party evidence rather than the counterparty’s own SOF.',
+    ],
+    techStack: ['Next.js 16', 'Supabase', 'PostgreSQL', 'Gemini Vision', 'Docker'],
   },
   {
-    id: "2",
-    role: "Software Developer",
-    company: "Department of Informatics, University",
-    period: "2024 - present",
-    description:
-      "Developed a complete Java web application (JavaBasicsWeb) using Servlets, JSP, and a MySQL backend. Implemented authentication, CRUD operations, database design, and deployed the system on Apache Tomcat.",
-    techStack: ["Java", "Maven", "Tomcat", "MySQL", "HTML/CSS"]
+    id: 'uniai',
+    role: 'Expertise Member',
+    company: 'UniAI',
+    period: 'Jan 2026 — Present',
+    current: true,
+    bullets: [
+      'Contribute to research and initiatives promoting responsible AI adoption, including organising open-to-all university hackathons (Makeathon).',
+      'Manage all information, notes and materials for the open events run throughout the year to promote AI and its responsible use cases.',
+    ],
+    techStack: ['Responsible AI', 'Research', 'Community'],
   },
   {
-    id: "3",
-    role: "Secrétaire Administratif",
-    company: "Institut Français de Grèce",
-    period: "2025 (2 months)",
-    description:
-      "Handled administrative tasks, coordinated communication with students and staff, assisted in event preparation, and managed documentation workflows to support daily operations.",
-    techStack: ["Administration", "Communication", "Organization"]
-  }
-];
-
-export const SKILLS: Skill[] = [
-  { name: "Java", level: 92, category: "Backend" },
-  { name: "Python", level: 88, category: "AI/ML" },
-  { name: "TensorFlow/PyTorch", level: 82, category: "AI/ML" },
-  { name: "C# / WinForms", level: 80, category: "Software Development" },
-  { name: "MySQL", level: 85, category: "Databases" },
-  { name: "Tomcat / Servlets", level: 78, category: "Backend" },
-  { name: "Docker", level: 70, category: "DevOps" },
-  { name: "React", level: 65, category: "Frontend" }
+    id: 'ifg',
+    role: 'Administrative Secretary',
+    company: 'Institut français de Grèce',
+    period: 'Sep — Oct 2025',
+    bullets: [
+      'Bilingual FR/EL support across institutional correspondence, document management and internal administrative workflows.',
+    ],
+    techStack: ['FR/EL Bilingual', 'Document Management', 'Operations'],
+  },
 ];
 
 export const PROJECTS: Project[] = [
   {
-    id: "p1",
-    title: "Marine Heatwave AI",
-    description:
-      "Machine learning model developed during the French Hackathon to detect and predict marine heatwaves using ocean temperature and depth-layer climate datasets.",
-    imageUrl: "https://www.marineheatwaves.org/uploads/1/1/0/5/110558923/mhw-definition-wcats_orig.png",
-    tags: ["Python", "ML", "Xarray", "Climate Data"],
-    link: "https://github.com/panosgeorgakopoulos/HackathonChallenge1.git"
+    id: 'nexus',
+    title: 'NEXUS',
+    subtitle: 'Real Estate Matching Platform',
+    accent: 'cyan',
+    bullets: [
+      'Engineered a scoring engine ranking properties 0–100 across budget, location, size and lifestyle criteria, served through role-based REST APIs (BUYER/OWNER/ADMIN) over a purpose-designed 10+ table schema.',
+      'Built a rule-based NLP query parser and Leaflet.js heatmap, reducing free-text searches to structured filters with no external ML dependency.',
+    ],
+    tags: ['Java', 'Spring Boot', 'PostgreSQL', 'JWT'],
   },
   {
-    id: "p2",
-    title: "JavaBasicsWeb",
-    description:
-      "A complete Java web application built with Maven, Servlets, JSP, and Tomcat, featuring full CRUD operations and a MySQL database backend.",
-    imageUrl: "https://www.startechup.com/wp-content/uploads/java-logo.png",
-    tags: ["Java", "Maven", "Tomcat", "MySQL"],
-    link: "https://github.com/panosgeorgakopoulos/demo1.git"
+    id: 'island-drive',
+    title: 'Island Drive Rentals',
+    subtitle: 'Vehicle Rental Platform',
+    accent: 'purple',
+    bullets: [
+      'Delivered a production booking platform with RBAC, a dynamic pricing engine and atomic booking transactions.',
+      'Integrated Stripe Checkout validated by webhook integrity checks, with i18n coverage across 8 languages.',
+    ],
+    tags: ['Next.js 15', 'TypeScript', 'Prisma', 'Stripe'],
   },
   {
-    id: "p3",
-    title: "Battleship (WinForms)",
-    description:
-      "A classic Battleship game built in C# using Windows Forms, featuring grid-based gameplay, game logic, and a structured UI.",
-    imageUrl: "https://playpager.com/images/1x1/battleship-1x1.jpg",
-    tags: ["C#", "Windows Forms", "Game Dev"],
-    link: "https://github.com/panosgeorgakopoulos/battleship.git"
-  }
+    id: 'risk-classifier',
+    title: 'Financial Transaction Risk Classifier',
+    subtitle: 'Applied ML Pipeline',
+    accent: 'green',
+    bullets: [
+      'Built a leak-proof classification pipeline (feature engineering, scaling, one-hot encoding, log transforms).',
+      'Structured it as a modular four-layer architecture that allows classifiers to be swapped without touching business logic.',
+    ],
+    tags: ['Python', 'Scikit-learn'],
+  },
+  {
+    id: 'cyberbus',
+    title: 'CYBERBUS',
+    subtitle: 'Smart Transit PWA',
+    accent: 'cyan',
+    bullets: [
+      'Developed a progressive web app with separate passenger and driver interfaces.',
+      'Integrated Gemini Vision for real-time landmark recognition and a conversational guide, with no dedicated ML backend.',
+    ],
+    tags: ['Node.js', 'Express', 'Gemini Vision AI', 'PWA'],
+  },
 ];
+
+export const SKILL_GROUPS: SkillGroup[] = [
+  {
+    id: 'languages',
+    label: 'Languages',
+    accent: 'cyan',
+    items: ['Java', 'Python', 'TypeScript', 'C#', 'SQL'],
+  },
+  {
+    id: 'ai',
+    label: 'AI & Machine Learning',
+    accent: 'purple',
+    items: [
+      'Scikit-learn',
+      'Vision-language document extraction',
+      'Gemini Vision',
+      'Anthropic Claude API',
+      'LLM output validation',
+      'Leak-proof ML pipelines',
+    ],
+  },
+  {
+    id: 'backend',
+    label: 'Backend & Data',
+    accent: 'green',
+    items: [
+      'Spring Boot',
+      'FastAPI',
+      'Node.js',
+      'REST APIs',
+      'PostgreSQL',
+      'MySQL',
+      'Prisma ORM',
+      'JDBC',
+    ],
+  },
+  {
+    id: 'frontend',
+    label: 'Frontend',
+    accent: 'cyan',
+    items: ['React', 'Next.js', 'TanStack Start', 'Tailwind CSS'],
+  },
+  {
+    id: 'platform',
+    label: 'Platform & Tooling',
+    accent: 'purple',
+    items: ['Docker', 'Git', 'Maven', 'Supabase', 'Cloudflare Workers'],
+  },
+  {
+    id: 'maritime',
+    label: 'Maritime Domain',
+    accent: 'green',
+    items: [
+      'Charter party laytime & demurrage',
+      'GENCON 94',
+      'Statements of Facts',
+      'Voyage operations',
+    ],
+  },
+];
+
+export const EDUCATION: EducationEntry[] = [
+  {
+    id: 'piraeus',
+    institution: 'University of Piraeus',
+    degree: 'BSc Computer Science',
+    period: 'Sep 2023 — Present',
+    details: [
+      'GPA 8.0/10 · 185 ECTS · 37 of 37 courses passed',
+      'Algorithms · Databases · Operating Systems · Networks · Software Engineering',
+    ],
+  },
+  {
+    id: 'leonin',
+    institution: 'Lycée Léonin, Nea Smyrni',
+    degree: 'Baccalauréat Hellénique',
+    period: '2020 — 2023',
+    details: ['Final grade 19.2/20', 'Mention Très Bien'],
+  },
+];
+
+export const CERTIFICATIONS: Certification[] = [
+  { name: 'Claude 101', issuer: 'Anthropic', year: '2026' },
+  { name: 'AI Skills Passport', issuer: 'EY', year: '2026' },
+  { name: 'Responsible AI', issuer: 'Microsoft', year: '2026' },
+];
+
+export const LANGUAGES: LanguageEntry[] = [
+  { name: 'Greek', level: 'Native' },
+  { name: 'English', level: 'C2' },
+  { name: 'French', level: 'B2' },
+];
+
+export const NAV_ITEMS = [
+  { label: 'Experience', href: '#experience' },
+  { label: 'Stack', href: '#skills' },
+  { label: 'Work', href: '#projects' },
+  { label: 'Education', href: '#education' },
+] as const;

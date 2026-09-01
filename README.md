@@ -1,32 +1,64 @@
-#  🖥️ Panos Portfolio
+# Panos Portfolio
 
-A high-performance, immersive portfolio website built for a future Full Stack Engineer. This project features a futuristic, neon-cyberpunk aesthetic with smooth scroll animations, interactive 3D elements, and a responsive "deck of cards" layout.
+Personal portfolio for **Panagiotis Sergios Georgakopoulos** — software
+engineer working in applied AI, Computer Science at the University of Piraeus.
 
-## ✨ Features
+Live at **[panosgeorgakopoulos.gr](https://panosgeorgakopoulos.gr)**.
 
-* **Immersive Hero Section:** Interactive particle background and 3D CSS cube animation.
-* **"Deck of Cards" Scrolling:** Sticky positioning creates a unique layering effect as the user scrolls through sections.
-* **Interactive Data Visualization:** Custom Recharts implementation for skills with hover effects and responsive design.
-* **Dynamic Project Gallery:** Grid layout with hover-reveal details and "scan line" animations.
-* **Fully Responsive:** Optimized for mobile, tablet, and desktop devices.
-* **Performance Focused:** Built with Vite for instant server start and optimized production builds.
+## Stack
 
-## 🛠️ Tech Stack
+React 19 · TypeScript · Vite 6 · Tailwind CSS v4 · lucide-react
 
-* **Framework:** [React 19](https://react.dev/)
-* **Build Tool:** [Vite](https://vitejs.dev/)
-* **Language:** [TypeScript](https://www.typescriptlang.org/)
-* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-* **Icons:** [Lucide React](https://lucide.dev/)
-* **Charts:** [Recharts](https://recharts.org/)
+Press <kbd>⌘K</kbd> (or <kbd>Ctrl</kbd>+<kbd>K</kbd>) anywhere on the site to
+open the command palette — jump to a section, copy the email or phone number,
+or open a profile.
 
-## 📂 Project Structure
+No router, no backend. Builds to static files served by GitHub Pages from the
+`gh-pages` branch.
+
+## Getting started
 
 ```bash
-src/
-├── components/       # UI Components (Hero, Navbar, Experience, etc.)
-├── constants.ts      # Data source for Resume, Skills, and Projects
-├── types.ts          # TypeScript interfaces
-├── App.tsx           # Main application layout
-├── index.css         # Global styles & Tailwind directives
-└── main.tsx          # Entry point
+npm install
+npm run dev
+```
+
+| Command             | What it does                                       |
+| ------------------- | -------------------------------------------------- |
+| `npm run dev`       | Dev server with HMR                                |
+| `npm run typecheck` | `tsc --noEmit`                                     |
+| `npm run build`     | Typechecks, then builds to `dist/`                 |
+| `npm run preview`   | Serves the production build                        |
+| `npm run deploy`    | Publishes `dist/` to the `gh-pages` branch         |
+
+## Structure
+
+```
+constants.ts      All site content — the single source of truth
+types.ts          Content model
+index.css         Tailwind v4 theme, custom utilities, base layer
+App.tsx           Section order and the scroll z-index deck
+components/       One component per section, plus shared helpers
+public/           Copied verbatim to dist/ (CNAME, favicon, OG image, sitemap)
+```
+
+Content is data. Every visible string comes from `constants.ts`, transcribed
+from `Georgakopoulos_CV.docx`. To change what the site says, edit that file —
+not a component.
+
+## Working on it with Claude Code
+
+`CLAUDE.md` documents the architecture and the non-obvious constraints (the
+z-index deck, Tailwind v4's CSS-first config, why accent classes must be
+literal). `.claude/` adds:
+
+- **Skills** — `/cv-sync` re-transcribes the site from a new CV revision,
+  `/add-project` adds an entry to Selected Work, `/site-audit` runs the full
+  parallel audit, `/ship` verifies and deploys.
+- **Agents** — `site-a11y`, `site-perf`, `site-seo`, `site-content` and
+  `site-design`, five specialists the audit skill fans out in parallel.
+
+## Licence
+
+Content and design © Panagiotis Sergios Georgakopoulos. Code available for
+reference.

@@ -1,81 +1,77 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { EXPERIENCES } from '../constants';
+import SectionHeading from './SectionHeading';
+import { useReveal } from './useReveal';
 
 const Experience: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isVisible } = useReveal<HTMLElement>();
 
   return (
-    <section 
-      id="experience" 
-      ref={sectionRef}
-      className="relative min-h-screen bg-neon-bg border-t border-white/10 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)] flex flex-col justify-center py-20 z-10"
+    <section
+      id="experience"
+      ref={ref}
+      aria-labelledby="experience-heading"
+      className="relative z-10 flex min-h-screen flex-col justify-center border-t border-white/10 bg-neon-bg py-24 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)]"
     >
-      <div className={`max-w-5xl mx-auto px-6 w-full h-full flex flex-col justify-center ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-        <div className="mb-16">
-          <div className="flex items-center gap-4 mb-4">
-             <span className="text-neon-cyan font-mono text-xs tracking-widest">01 / CAREER</span>
-             <div className="h-[1px] flex-1 bg-white/10"></div>
-          </div>
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-white">
-            EXPERIENCE
-          </h2>
-        </div>
+      <div className={`mx-auto w-full max-w-5xl px-6 ${isVisible ? 'is-revealed' : ''}`}>
+        <SectionHeading id="experience-heading" index="01" eyebrow="Career" title="EXPERIENCE" />
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12">
-           {/* Navigation/Timeline (Visual only) */}
-           <div className="hidden md:flex flex-col gap-4 border-l border-white/5 pl-6 py-2">
-              {EXPERIENCES.map((exp) => (
-                 <div key={exp.id} className="text-sm font-mono text-slate-500 py-2">
-                    {exp.period}
-                 </div>
-              ))}
-           </div>
+        <ol className="relative space-y-14 border-l border-white/10 pl-8 md:pl-12">
+          {EXPERIENCES.map((exp, index) => (
+            <li
+              key={exp.id}
+              style={{ '--i': index + 2 } as React.CSSProperties}
+              className="reveal-item group relative"
+            >
+              {/* Timeline node */}
+              <span
+                aria-hidden="true"
+                className={`absolute -left-[2.1rem] top-2 flex h-3 w-3 items-center justify-center md:-left-[3.35rem] ${
+                  exp.current ? '' : 'opacity-60'
+                }`}
+              >
+                {exp.current ? (
+                  <span className="absolute inline-flex h-3 w-3 animate-ping rounded-full bg-neon-purple opacity-60" />
+                ) : null}
+                <span className="relative h-2.5 w-2.5 rounded-full bg-neon-purple ring-4 ring-neon-bg transition-shadow group-hover:shadow-[0_0_12px_#bd00ff]" />
+              </span>
 
-           {/* Content */}
-           <div className="space-y-16">
-              {EXPERIENCES.map((exp) => (
-                <div key={exp.id} className="group relative">
-                  <div className="absolute -left-3 md:-left-[3.25rem] top-2 w-2 h-2 rounded-full bg-neon-purple group-hover:shadow-[0_0_10px_#bd00ff] transition-shadow"></div>
-                  
-                  <h3 className="text-2xl font-display font-medium text-white mb-1 group-hover:text-neon-cyan transition-colors">
-                    {exp.role}
-                  </h3>
-                  <h4 className="text-lg text-slate-400 mb-4 font-light">{exp.company}</h4>
-                  
-                  <p className="text-slate-400 leading-relaxed mb-6 font-light text-sm md:text-base border-l-2 border-white/5 pl-4 group-hover:border-neon-cyan/30 transition-colors">
-                    {exp.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    {exp.techStack.map(tech => (
-                      <span key={tech} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-white/5 rounded text-slate-300 border border-white/5 group-hover:border-neon-purple/30 transition-colors">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-           </div>
-        </div>
+              <p className="mb-2 font-mono text-xs uppercase tracking-widest text-slate-400">
+                {exp.period}
+              </p>
+
+              <h3 className="font-display text-2xl font-medium text-white transition-colors group-hover:text-neon-cyan md:text-3xl">
+                {exp.role}
+              </h3>
+              <p className="mt-1 text-lg font-light text-slate-300">{exp.company}</p>
+              {exp.subtitle ? (
+                <p className="mt-1 font-mono text-xs text-neon-cyan/70">{exp.subtitle}</p>
+              ) : null}
+
+              <ul className="mt-5 max-w-2xl space-y-3 border-l-2 border-white/5 pl-5 transition-colors group-hover:border-neon-cyan/30">
+                {exp.bullets.map((bullet) => (
+                  <li
+                    key={bullet}
+                    className="text-sm font-light leading-relaxed text-slate-300 md:text-base"
+                  >
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {exp.techStack.map((tech) => (
+                  <li
+                    key={tech}
+                    className="rounded border border-white/5 bg-white/5 px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-300 transition-colors group-hover:border-neon-purple/30"
+                  >
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

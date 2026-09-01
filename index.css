@@ -1,0 +1,389 @@
+@import 'tailwindcss';
+
+/* ── Design tokens ────────────────────────────────────────────────────────
+   Tailwind v4 reads these directly: `--color-neon-cyan` produces
+   `text-neon-cyan`, `bg-neon-cyan`, `border-neon-cyan`, and so on.        */
+@theme {
+  --color-neon-cyan: #00f0ff;
+  --color-neon-purple: #bd00ff;
+  /* Text-safe purple. #bd00ff is 4.47:1 on the page background — just under the
+     4.5:1 AA floor — so decoration uses the neon value and copy uses this one. */
+  --color-neon-purple-text: #c74dff;
+  --color-neon-green: #00ff94;
+  --color-neon-bg: #050505;
+  --color-neon-card: #0a0a0a;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Sections occupy z-10 … z-50 (the "deck of cards" stack); the navbar and
+     its mobile overlay must sit above all of them. */
+  --z-index-60: 60;
+  --z-index-70: 70;
+  /* The command palette sits above the navbar. */
+  --z-index-80: 80;
+
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-spin-slow: spin 10s linear infinite;
+  --animate-scan: scan 4s linear infinite;
+  --animate-fade-in-up: fade-in-up 0.7s ease-out forwards;
+  --animate-rise: rise 0.75s var(--ease-out-quint) forwards;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-orbit: orbit 7s linear infinite;
+
+  /* One easing curve for every deliberate motion on the site. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  @keyframes scan {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+  @keyframes rise {
+    0% {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      /* The track holds two identical halves, so half a turn loops seamlessly. */
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ── Custom utilities ─────────────────────────────────────────────────── */
+@utility bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, #ffffff08 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff08 1px, transparent 1px);
+}
+
+/* Was referenced across the site but never defined. */
+@utility text-glow {
+  text-shadow: 0 0 28px rgb(0 240 255 / 0.35);
+}
+
+@utility glass {
+  background: rgb(10 10 10 / 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────
+   One button system, three weights. Deliberately *not* neon-filled pills:
+   crisp radii, real surface shading, sentence case, and a sheen that sweeps
+   once on hover instead of a bloom that sits there.                        */
+@layer components {
+  .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 0.7rem;
+    padding: 0.8rem 1.35rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.011em;
+    white-space: nowrap;
+    transition:
+      transform 0.22s var(--ease-out-quint),
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      box-shadow 0.3s ease,
+      color 0.22s ease;
+  }
+
+  /* Negative z-index paints above the button's own background but under its
+     text, so the sweep reads as light moving across the surface. */
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    transform: translateX(-135%) skewX(-14deg);
+    transition: transform 0.8s var(--ease-out-quint);
+  }
+
+  .btn:hover::after,
+  .btn:focus-visible::after {
+    transform: translateX(135%) skewX(-14deg);
+  }
+
+  .btn:active {
+    transform: translateY(1px) scale(0.988);
+    transition-duration: 0.06s;
+  }
+
+  .btn-icon {
+    transition: transform 0.28s var(--ease-out-quint);
+  }
+
+  .btn:hover .btn-icon {
+    transform: translateX(3px);
+  }
+
+  /* Primary — a real light surface, not a saturated fill. Cyan is reserved
+     for the hover shadow so the accent still signs the interaction. */
+  .btn-primary {
+    border: 1px solid rgb(255 255 255 / 0.85);
+    background-image: linear-gradient(180deg, #ffffff 0%, #dde2e9 100%);
+    color: #050505;
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.75),
+      0 10px 26px -14px rgb(0 0 0 / 0.95);
+  }
+
+  .btn-primary::after {
+    background: linear-gradient(
+      100deg,
+      transparent 40%,
+      rgb(0 240 255 / 0.5) 50%,
+      transparent 60%
+    );
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.85),
+      0 0 0 1px rgb(0 240 255 / 0.28),
+      0 18px 38px -18px rgb(0 240 255 / 0.5);
+  }
+
+  /* Ghost — the quiet twin. Glass surface, hairline border. */
+  .btn-ghost {
+    border: 1px solid rgb(255 255 255 / 0.12);
+    background: rgb(255 255 255 / 0.03);
+    color: var(--color-slate-200);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .btn-ghost::after {
+    background: linear-gradient(
+      100deg,
+      transparent 40%,
+      rgb(255 255 255 / 0.14) 50%,
+      transparent 60%
+    );
+  }
+
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    border-color: rgb(0 240 255 / 0.42);
+    background: rgb(255 255 255 / 0.07);
+    color: #ffffff;
+  }
+
+  /* Small — navbar and inline affordances. */
+  .btn-sm {
+    gap: 0.4rem;
+    border-radius: 0.6rem;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ── Motion primitives ─────────────────────────────────────────────────── */
+
+/* Children of a revealed container rise in sequence. Set `--i` per child. */
+@utility reveal-item {
+  will-change: transform, opacity;
+
+  /* Scoped to `.js` (set on <html> before first paint) so that if scripting is
+     off, or the reveal never fires, the content is simply visible rather than
+     stranded at opacity 0. */
+  .js & {
+    opacity: 0;
+  }
+
+  .is-revealed & {
+    animation: rise 0.75s var(--ease-out-quint) forwards;
+    animation-delay: calc(var(--i, 0) * 65ms);
+  }
+}
+
+/* A pointer-tracked highlight. `--mx`/`--my` are written by useSpotlight. */
+@utility spotlight {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      340px circle at var(--mx, 50%) var(--my, -20%),
+      rgb(255 255 255 / 0.06),
+      transparent 62%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  &:hover::before,
+  &:focus-visible::before {
+    opacity: 1;
+  }
+}
+
+/* Fades a horizontally scrolling track out at both edges. */
+@utility edge-fade {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+
+/* Underline that draws in from the left on hover. */
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition: background-size 0.35s var(--ease-out-quint);
+
+  &:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Keep hash targets clear of the fixed navbar. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-neon-bg);
+    color: var(--color-slate-200);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Visible keyboard focus everywhere — the design has none by default. */
+  :focus-visible {
+    outline: 2px solid var(--color-neon-cyan);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: rgb(189 0 255 / 0.35);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-neon-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-neon-cyan);
+  }
+}
+
+/* ── Motion preferences ───────────────────────────────────────────────────
+   Honour prefers-reduced-motion: kill the decorative loops and reveal
+   animations rather than letting them run at speed.                       */
+/* The hero centres its content in the viewport, which on a tall window clears
+   the floating navbar by itself. On a laptop-height window (a 1440x900 display
+   leaves ~757px of viewport) centring puts the availability badge underneath
+   the nav, so top-align it with enough padding to clear the pill. */
+@media (min-width: 48rem) and (max-height: 52rem) {
+  #hero {
+    align-items: flex-start;
+    padding-top: 7rem;
+  }
+}
+
+/* Shorter still, and the content no longer fits at all: `fixed` + `h-screen` +
+   `overflow-hidden` would clip it with no way to scroll. Landscape phones and
+   short resized windows land here — fall back to the in-flow layout and drop
+   the spacer, exactly as below md. */
+@media (min-width: 48rem) and (max-height: 46rem) {
+  #hero {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding-block: 7rem 5rem;
+  }
+
+  #hero-spacer {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

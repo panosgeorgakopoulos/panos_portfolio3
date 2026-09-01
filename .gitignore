@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Source CV — the site's content is transcribed into constants.ts; the document
+# itself is personal (phone number, address) and is never published.
+Georgakopoulos_CV.docx
+*.docx

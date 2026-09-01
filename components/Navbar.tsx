@@ -1,107 +1,234 @@
-import React, { useState } from 'react';
-import { Menu, X, Cpu } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Cpu, Menu, Search, X } from 'lucide-react';
+import { NAV_ITEMS } from '../constants';
+import { openCommandPalette } from './CommandPalette';
+
+/** Hoisted so the scroll-spy observer is not torn down on every re-render. */
+const NAV_HREFS = NAV_ITEMS.map((item) => item.href);
+
+/** Tracks which section is currently in view so the nav can mark it active. */
+function useActiveSection(ids: readonly string[]) {
+  const [active, setActive] = useState<string>('');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(`#${visible.target.id}`);
+      },
+      // The nav sits at the top, so bias the viewport band downward.
+      { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.25, 0.5] },
+    );
+
+    ids
+      .map((id) => document.querySelector(id))
+      .filter((el): el is Element => el !== null)
+      .forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [ids]);
+
+  return active;
+}
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const active = useActiveSection(NAV_HREFS);
 
-  const navItems = [
-    { label: 'Experience', href: '#experience' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Projects', href: '#projects' },
-  ];
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  /** Escape and the toggle return focus to the button; a nav link does not. */
+  const restoreFocusRef = useRef(false);
 
-  // Helper function to handle smooth scroll to top
-  const scrollToTop = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-    // Update URL hash without jumping (optional, keeps URL clean)
-    history.pushState(null, "", window.location.pathname);
+  // The overlay behaves like a modal: trap Tab inside it, close on Escape,
+  // lock background scroll, and hand focus back where it came from.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const focusables = (): HTMLElement[] => {
+      const overlay = overlayRef.current;
+      if (!overlay) return [];
+      return Array.from(overlay.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+    };
+
+    focusables()[0]?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        restoreFocusRef.current = true;
+        setIsMenuOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+
+      const button = toggleRef.current;
+      if (restoreFocusRef.current && button && document.contains(button)) button.focus();
+      restoreFocusRef.current = false;
+    };
+  }, [isMenuOpen]);
+
+  const scrollToTop = (event: React.MouseEvent) => {
+    event.preventDefault();
+    // An explicit behavior:'smooth' argument overrides the CSS scroll-behavior
+    // reset in the prefers-reduced-motion block, so gate it here too.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    history.pushState(null, '', window.location.pathname);
   };
 
-  return (
+  const logo = (
     <>
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden md:block w-auto">
-        <div className="glass rounded-full px-8 py-4 flex items-center gap-10 shadow-[0_0_30px_rgba(0,240,255,0.1)] border border-white/10">
-          {/* Logo - Desktop (Fixed) */}
-          <a 
-            href="#" 
-            onClick={scrollToTop} 
-            className="flex items-center gap-2 group cursor-pointer"
-          >
-            <Cpu className="text-neon-cyan group-hover:animate-spin-slow transition-all duration-500" size={20} />
-            <span className="font-display font-bold text-lg tracking-wider text-white">
-              PANOS<span className="text-neon-purple">.DEV</span>
-            </span>
+      <Cpu
+        className="text-neon-cyan transition-all duration-500 group-hover:animate-spin-slow"
+        size={20}
+        aria-hidden="true"
+      />
+      <span className="font-display text-lg font-bold tracking-wider text-white">
+        PANOS<span className="text-neon-purple-text">.DEV</span>
+      </span>
+    </>
+  );
+
+  return (
+    <header>
+      {/* Desktop */}
+      <nav
+        aria-label="Main"
+        className="fixed left-1/2 top-6 z-70 hidden w-auto -translate-x-1/2 md:block"
+      >
+        <div className="glass flex items-center gap-8 rounded-full px-7 py-3.5 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+          <a href="#" onClick={scrollToTop} className="group flex items-center gap-2">
+            {logo}
+            <span className="sr-only">Back to top</span>
           </a>
 
-          {/* Desktop Nav */}
-          <div className="flex items-center gap-8">
-            {navItems.map(item => (
-              <a 
-                key={item.label}
-                href={item.href}
-                className="text-xs font-mono uppercase tracking-widest text-slate-400 hover:text-neon-cyan transition-colors"
-              >
-                {item.label}
-              </a>
+          <ul className="flex items-center gap-7">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  aria-current={active === item.href ? 'page' : undefined}
+                  className={`font-mono text-xs uppercase tracking-widest transition-colors ${
+                    active === item.href ? 'text-neon-cyan' : 'text-slate-400 hover:text-neon-cyan'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              </li>
             ))}
-            <a 
-              href="#contact" 
-              className="px-6 py-2 text-xs font-bold uppercase tracking-wider text-black bg-neon-cyan rounded-full hover:bg-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] hover:scale-105"
+          </ul>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={openCommandPalette}
+              aria-label="Open command palette"
+              className="group flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.02] px-2.5 py-1.5 text-slate-400 transition-colors hover:border-neon-cyan/40 hover:text-slate-200"
             >
-              Hire Me
+              <Search size={13} aria-hidden="true" />
+              <kbd className="font-mono text-[10px] text-slate-400 transition-colors group-hover:text-neon-cyan">
+                ⌘K
+              </kbd>
+            </button>
+
+            <a href="#contact" className="btn btn-primary btn-sm">
+              Hire me
             </a>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass border-b border-white/10 px-6 h-16 flex items-center justify-between">
-         {/* Logo - Mobile (Fixed) */}
-         <a 
-            href="#" 
-            onClick={scrollToTop}
-            className="flex items-center gap-2"
-         >
-            <Cpu className="text-neon-cyan" size={20} />
-            <span className="font-display font-bold text-lg tracking-wider text-white">
-              PANOS<span className="text-neon-purple">.DEV</span>
-            </span>
-          </a>
-        <button 
-          className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+      {/* Mobile header */}
+      <div className="glass fixed inset-x-0 top-0 z-70 flex h-16 items-center justify-between px-6 md:hidden">
+        <a href="#" onClick={scrollToTop} className="group flex items-center gap-2">
+          {logo}
+          <span className="sr-only">Back to top</span>
+        </a>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="Open command palette"
+            className="rounded-full p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white active:bg-white/20"
+          >
+            <Search size={20} aria-hidden="true" />
+          </button>
+          <button
+            ref={toggleRef}
+            type="button"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            className="rounded-full p-2 text-white transition-colors hover:bg-white/10 active:bg-white/20"
+            onClick={() => {
+              restoreFocusRef.current = isMenuOpen;
+              setIsMenuOpen((open) => !open);
+            }}
+          >
+            {isMenuOpen ? (
+              <X size={24} aria-hidden="true" />
+            ) : (
+              <Menu size={24} aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-fade-in-up">
-           {navItems.map(item => (
-            <a 
-              key={item.label}
-              href={item.href}
-              className="text-3xl font-display font-light text-white hover:text-neon-cyan tracking-widest uppercase transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
-          <a 
-            href="#contact" 
-            className="text-xl font-mono text-neon-cyan mt-8 border border-neon-cyan/30 px-8 py-3 rounded-full hover:bg-neon-cyan/10"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            [ INITIATE_CONTACT ]
-          </a>
-        </div>
-      )}
-    </>
+      {/* Mobile overlay */}
+      <div
+        id="mobile-menu"
+        ref={overlayRef}
+        hidden={!isMenuOpen}
+        className="fixed inset-0 z-60 flex animate-fade-in-up flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl md:hidden"
+      >
+        <nav aria-label="Mobile">
+          <ul className="flex flex-col items-center gap-8">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  className="font-display text-3xl font-light uppercase tracking-widest text-white transition-colors hover:text-neon-cyan"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a
+          href="#contact"
+          className="btn btn-primary mt-4"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Get in touch
+        </a>
+      </div>
+    </header>
   );
 };
 

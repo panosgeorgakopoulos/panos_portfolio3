@@ -4,43 +4,42 @@ import Hero from './components/Hero';
 import Experience from './components/Experience';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
+import Education from './components/Education';
 import Contact from './components/Contact';
+import CommandPalette from './components/CommandPalette';
+import ScrollProgress from './components/ScrollProgress';
 
-const App: React.FC = () => {
-  return (
-    <div className="bg-neon-bg min-h-screen text-slate-200 selection:bg-neon-purple/30 selection:text-white">
-      <Navbar />
-      
-      <main className="relative w-full">
-        {/* 
-           Stacking Context Strategy:
-           Each section is sticky.
-           Each subsequent section has a higher z-index and a solid background to cover the previous one.
-           This creates the "Deck of Cards" scrolling effect.
-        */}
-        
-        <div className="relative z-0">
-          <Hero />
-        </div>
-        
-        <div className="relative z-10">
-          <Experience />
-        </div>
-        
-        <div className="relative z-20">
-          <Skills />
-        </div>
-        
-        <div className="relative z-30">
-          <Projects />
-        </div>
-        
-        <div className="relative z-40">
-          <Contact />
-        </div>
-      </main>
-    </div>
-  );
-};
+/**
+ * "Deck of cards" scroll.
+ *
+ * From md up the hero is fixed; every following section is opaque and carries a higher
+ * z-index than the one before it, so each slides up over its predecessor.
+ * Section z-indexes live on the sections themselves (z-10 … z-50) — keep them
+ * in ascending document order when adding a section.
+ */
+const App: React.FC = () => (
+  <div className="min-h-screen bg-neon-bg text-slate-200">
+    <a
+      href="#main"
+      className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-neon-cyan focus:px-5 focus:py-2.5 focus:font-mono focus:text-sm focus:font-bold focus:text-black"
+    >
+      Skip to content
+    </a>
+
+    <ScrollProgress />
+    <Navbar />
+    <CommandPalette />
+
+    {/* tabIndex={-1} makes the skip link's target programmatically focusable. */}
+    <main id="main" tabIndex={-1} className="relative w-full outline-none">
+      <Hero />
+      <Experience />
+      <Skills />
+      <Projects />
+      <Education />
+      <Contact />
+    </main>
+  </div>
+);
 
 export default App;

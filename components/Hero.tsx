@@ -1,37 +1,51 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { RESUME_DATA } from '../constants';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowDown, ArrowRight, Command, Mail, MapPin } from 'lucide-react';
+import { RESUME_DATA, STATS } from '../constants';
+import { ACCENTS } from './accents';
+import { openCommandPalette } from './CommandPalette';
+import { useCountUp } from './useCountUp';
+import type { Stat } from '../types';
 
-const CHARS = "-_~`!@#$%^&*()+=[]{}|;:,.<>?/0123456789";
+const CHARS = '-_~`!@#$%^&*()+=[]{}|;:,.<>?/0123456789';
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Scramble-in text effect. Skipped entirely under reduced-motion. */
 const DecryptedText: React.FC<{ text: string; className?: string }> = ({ text, className }) => {
-  const [displayText, setDisplayText] = useState(text);
-  
+  const ref = useRef<HTMLSpanElement>(null);
+
   useEffect(() => {
+    const node = ref.current;
+    if (!node || prefersReducedMotion()) return;
+
     let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(prev => 
-        text
-          .split("")
-          .map((letter, index) => {
-            if (index < iteration) {
-              return text[index];
-            }
-            return CHARS[Math.floor(Math.random() * CHARS.length)];
-          })
-          .join("")
-      );
+    const interval = window.setInterval(() => {
+      // Written straight to the DOM: this ticks ~25x/sec and does not need to
+      // go through React's render cycle.
+      node.textContent = text
+        .split('')
+        .map((_, index) =>
+          index < iteration ? text[index] : CHARS[Math.floor(Math.random() * CHARS.length)],
+        )
+        .join('');
 
       if (iteration >= text.length) {
-        clearInterval(interval);
+        node.textContent = text;
+        window.clearInterval(interval);
       }
-
       iteration += 1 / 3;
     }, 40);
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [text]);
 
-  return <span className={className}>{displayText}</span>;
+  return (
+    <span ref={ref} className={className}>
+      {text}
+    </span>
+  );
 };
 
 interface Particle {
@@ -44,59 +58,116 @@ interface Particle {
   color: string;
 }
 
+/** One hero figure. Counts up from zero once the hero has settled. */
+const StatTile: React.FC<{ stat: Stat; index: number; started: boolean }> = ({
+  stat,
+  index,
+  started,
+}) => {
+  const value = useCountUp(stat.value, started);
+
+  return (
+    <div
+      style={{ '--i': index + 6 } as React.CSSProperties}
+      className="reveal-item spotlight rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3 transition-colors duration-300 hover:border-white/12"
+    >
+      <dt className="relative z-10 text-[10px] uppercase tracking-wider text-slate-400">
+        {stat.label}
+      </dt>
+      <dd
+        className={`relative z-10 font-mono text-xl tabular-nums ${ACCENTS[stat.accent].text}`}
+      >
+        {value}
+      </dd>
+    </div>
+  );
+};
+
 const Hero: React.FC = () => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [particles, setParticles] = useState<Particle[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
+  const [hasEntered, setHasEntered] = useState(false);
 
   useEffect(() => {
-    const generatedParticles = Array.from({ length: 30 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 2 + 1,
-      opacity: Math.random() * 0.5 + 0.1,
-      speed: (Math.random() - 0.5) * 40,
-      color: Math.random() > 0.6 ? '#00f0ff' : (Math.random() > 0.3 ? '#bd00ff' : '#ffffff')
-    }));
-    setParticles(generatedParticles);
+    const id = window.setTimeout(() => setHasEntered(true), 120);
+    return () => window.clearTimeout(id);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (!sectionRef.current) return;
-    const { left, top, width, height } = sectionRef.current.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 2 - 1;
-    const y = ((e.clientY - top) / height) * 2 - 1;
-    setMousePos({ x, y });
-  };
+  const frameRef = useRef(0);
 
-  const bgMoveX = mousePos.x * -20;
-  const bgMoveY = mousePos.y * -20;
-  const coreRotateY = mousePos.x * 20; 
-  const coreRotateX = mousePos.y * -20; 
+  // Decoration only; generated once and never re-rendered.
+  const particles = useMemo<Particle[]>(
+    () =>
+      Array.from({ length: 28 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.12,
+        speed: (Math.random() - 0.5) * 40,
+        color: Math.random() > 0.6 ? '#00f0ff' : Math.random() > 0.3 ? '#bd00ff' : '#ffffff',
+      })),
+    [],
+  );
+
+  /**
+   * Pointer parallax writes CSS custom properties on the section and lets CSS
+   * do the transforms. The previous implementation held the pointer position in
+   * React state, re-rendering the entire hero — 28 particles included — on
+   * every mousemove event.
+   */
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || prefersReducedMotion()) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+
+    const onMove = (event: PointerEvent) => {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = requestAnimationFrame(() => {
+        const { left, top, width, height } = node.getBoundingClientRect();
+        const x = ((event.clientX - left) / width) * 2 - 1;
+        const y = ((event.clientY - top) / height) * 2 - 1;
+        node.style.setProperty('--px', String(x));
+        node.style.setProperty('--py', String(y));
+      });
+    };
+
+    node.addEventListener('pointermove', onMove, { passive: true });
+    return () => {
+      node.removeEventListener('pointermove', onMove);
+      cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
 
   return (
     <>
-      <section 
+      <section
         ref={sectionRef}
-        id="hero" 
-        onMouseMove={handleMouseMove}
-        className="fixed top-0 left-0 w-full h-screen flex items-center justify-center overflow-hidden bg-neon-bg z-0"
+        id="hero"
+        style={{ '--px': 0, '--py': 0 } as React.CSSProperties}
+        className="relative z-0 flex min-h-screen w-full items-center overflow-hidden bg-neon-bg md:fixed md:inset-0 md:h-screen"
       >
-        {/* Grid Background */}
-        <div className="absolute inset-0 bg-grid-pattern bg-[size:50px_50px] opacity-20"
-             style={{ transform: `translate(${bgMoveX * 0.5}px, ${bgMoveY * 0.5}px)` }}></div>
-        
-        {/* Ambience */}
-        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-neon-purple/20 rounded-full blur-[120px] animate-pulse-slow"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-neon-cyan/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-grid-pattern bg-[size:50px_50px] opacity-25"
+          style={{ transform: 'translate(calc(var(--px) * -10px), calc(var(--py) * -10px))' }}
+        />
 
-        {/* Particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Ambient glows */}
+        <div
+          aria-hidden="true"
+          className="absolute -left-[10%] -top-[20%] h-[500px] w-[500px] animate-pulse-slow rounded-full bg-neon-purple/20 blur-[120px]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-[20%] -right-[10%] h-[600px] w-[600px] animate-pulse-slow rounded-full bg-neon-cyan/10 blur-[120px]"
+          style={{ animationDelay: '2s' }}
+        />
+
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
           {particles.map((p) => (
             <div
               key={p.id}
-              className="absolute rounded-full transition-transform duration-700 ease-out"
+              className="absolute rounded-full transition-transform duration-300 ease-out"
               style={{
                 left: `${p.x}%`,
                 top: `${p.y}%`,
@@ -105,74 +176,108 @@ const Hero: React.FC = () => {
                 backgroundColor: p.color,
                 opacity: p.opacity,
                 boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
-                transform: `translate(${mousePos.x * p.speed}px, ${mousePos.y * p.speed}px)`
+                transform: `translate(calc(var(--px) * ${p.speed}px), calc(var(--py) * ${p.speed}px))`,
               }}
             />
           ))}
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[65%_35%] gap-8 items-center h-full">
-          
-          {/* Text Content */}
-          <div className="space-y-8 animate-fade-in-up relative z-20">
-            <div className="flex items-center gap-3">
-               <div className="h-[1px] w-12 bg-neon-cyan shadow-[0_0_10px_#00f0ff]"></div>
-               <span className="text-neon-cyan font-mono text-xs tracking-[0.2em] uppercase">Welcome</span>
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-24 md:py-0">
+          <div className={`max-w-3xl space-y-7 ${hasEntered ? 'is-revealed' : ''}`}>
+            <div
+              style={{ '--i': 0 } as React.CSSProperties}
+              className="reveal-item flex flex-wrap items-center gap-3"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-neon-green/30 bg-neon-green/5 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-neon-green">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-green opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-neon-green" />
+                </span>
+                {RESUME_DATA.availabilityBadge}
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                <MapPin size={12} aria-hidden="true" />
+                {RESUME_DATA.location}
+              </span>
             </div>
-            
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl 2xl:text-8xl font-display font-light leading-[0.9] tracking-tighter">
-              <span className="block text-white opacity-90">I AM</span>
-              <DecryptedText 
-                text={RESUME_DATA.name.toUpperCase()} 
-                className="block font-bold text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple text-glow"
+
+            <h1
+              style={{ '--i': 1 } as React.CSSProperties}
+              className="reveal-item font-display text-[clamp(1.9rem,8.5vw,2.75rem)] font-light leading-[0.92] tracking-tighter sm:text-6xl lg:text-7xl"
+            >
+              <span className="block text-white/90">I AM</span>
+              <DecryptedText
+                text={RESUME_DATA.name.toUpperCase()}
+                className="block bg-gradient-to-r from-neon-cyan via-white to-neon-purple bg-clip-text font-bold text-transparent text-glow"
               />
             </h1>
-            
-            <p className="text-lg md:text-xl text-slate-400 font-light max-w-xl border-l-2 border-white/10 pl-6 leading-relaxed">
-              {RESUME_DATA.title} <br/>
-              <span className="text-sm font-mono text-neon-purple mt-2 block opacity-80">{RESUME_DATA.location}</span>
+
+            <p
+              style={{ '--i': 3 } as React.CSSProperties}
+              className="reveal-item max-w-2xl border-l-2 border-neon-cyan/40 pl-6 text-lg font-light leading-relaxed text-slate-300 md:text-xl"
+            >
+              {RESUME_DATA.title}
+              <span className="mt-2 block text-base text-slate-400">{RESUME_DATA.tagline}</span>
             </p>
-          </div>
 
-          {/* 3D Cube / Visual */}
-          <div className="relative h-[400px] md:h-[600px] w-full hidden lg:flex items-center justify-center perspective-container pointer-events-none z-10">
-             <div 
-                className="relative w-48 h-48 md:w-64 md:h-64 transition-transform duration-100 ease-linear"
-                style={{
-                  transform: `rotateX(${coreRotateX}deg) rotateY(${coreRotateY}deg)`,
-                  transformStyle: 'preserve-3d'
-                }}
-             >
-                {/* Inner Core */}
-                <div className="absolute inset-10 bg-neon-cyan/20 rounded-full blur-xl animate-pulse" style={{ transform: 'translateZ(0)' }}></div>
+            <div
+              style={{ '--i': 4 } as React.CSSProperties}
+              className="reveal-item flex flex-wrap items-center gap-3 pt-2"
+            >
+              <a href="#projects" className="btn btn-primary group">
+                View selected work
+                <ArrowRight size={15} className="btn-icon" aria-hidden="true" />
+              </a>
+              <a href={`mailto:${RESUME_DATA.email}`} className="btn btn-ghost">
+                <Mail size={15} aria-hidden="true" />
+                Get in touch
+              </a>
+            </div>
 
-                {/* Cube Faces Construction */}
-                {[
-                  { rotate: 'rotateY(0deg)', trans: '128px', border: 'neon-cyan' },
-                  { rotate: 'rotateY(180deg)', trans: '128px', border: 'neon-purple' },
-                  { rotate: 'rotateY(90deg)', trans: '128px', border: 'white' },
-                  { rotate: 'rotateY(-90deg)', trans: '128px', border: 'white' },
-                  { rotate: 'rotateX(90deg)', trans: '128px', border: 'neon-cyan' },
-                  { rotate: 'rotateX(-90deg)', trans: '128px', border: 'neon-purple' },
-                ].map((face, idx) => (
-                  <div 
-                    key={idx}
-                    className={`absolute inset-0 bg-black/20 border border-${face.border}/30 backdrop-blur-sm`} 
-                    style={{ transform: `${face.rotate} translateZ(${face.trans})` }}
-                  >
-                    <div className="absolute inset-4 border border-dashed border-white/10 opacity-50"></div>
-                  </div>
-                ))}
-                
-                 {/* Orbitals */}
-                 <div className="absolute -inset-16 border border-neon-cyan/20 rounded-full animate-[spin_10s_linear_infinite]" style={{ transform: 'rotateX(90deg)' }}></div>
-                 <div className="absolute -inset-24 border border-neon-purple/20 rounded-full animate-[spin_15s_linear_infinite_reverse]" style={{ transform: 'rotateY(90deg)' }}></div>
-             </div>
+            {/* The palette is the fastest path through the whole page — say so. */}
+            <button
+              type="button"
+              onClick={openCommandPalette}
+              style={{ '--i': 5 } as React.CSSProperties}
+              className="reveal-item group inline-flex items-center gap-2 rounded-lg border border-white/8 bg-white/[0.02] px-3 py-2 font-mono text-[11px] text-slate-400 transition-colors hover:border-neon-cyan/40 hover:text-slate-200"
+            >
+              <Command size={12} aria-hidden="true" className="text-neon-cyan" />
+              <span>
+                Press{' '}
+                <kbd className="rounded border border-white/15 bg-white/5 px-1 py-0.5 text-[10px] text-slate-300 transition-colors group-hover:border-neon-cyan/40">
+                  ⌘K
+                </kbd>{' '}
+                to jump anywhere
+              </span>
+            </button>
+
+            <dl className="grid max-w-xl grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
+              {STATS.map((stat, index) => (
+                <StatTile key={stat.label} stat={stat} index={index} started={hasEntered} />
+              ))}
+            </dl>
           </div>
         </div>
+
+        <a
+          href="#experience"
+          aria-label="Scroll to experience"
+          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-slate-400 transition-colors hover:text-neon-cyan md:flex"
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+          <ArrowDown size={16} className="animate-bounce" aria-hidden="true" />
+        </a>
       </section>
-      {/* Spacer to allow scrolling past fixed hero */}
-      <div className="h-screen w-full invisible pointer-events-none relative z-0"></div>
+
+      {/* Spacer: from md up the hero is fixed, so the document needs its height
+          back. Below md the hero is in normal flow (a phone viewport is too
+          short to hold the hero content inside a clipped, fixed h-screen box),
+          so the spacer would be a blank screen. */}
+      <div
+        id="hero-spacer"
+        aria-hidden="true"
+        className="pointer-events-none relative z-0 hidden h-screen w-full md:block"
+      />
     </>
   );
 };
