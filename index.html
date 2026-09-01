@@ -1,111 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
 
-    <title>Panos Georgakopoulos | Software Engineer</title>
-    <meta name="description" content="Portfolio of Panos Georgakopoulos, a Full Stack Engineer specializing in Java, Python, and React. Building robust, scalable systems." />
-    <meta name="keywords" content="Software Engineer, Java Developer, Full Stack, React, Python, Panos Georgakopoulos, Portfolio, Greece, Web Development" />
-    <meta name="author" content="Panos Georgakopoulos" />
-    <meta name="robots" content="index, follow" />
+    <title>Panos Georgakopoulos | Software Engineer · Applied AI</title>
+    <meta
+      name="description"
+      content="Software engineer working in applied AI, studying CS at the University of Piraeus. Backend systems, ML pipelines and LLM products in Java, Python, TypeScript."
+    />
+    <meta
+      name="keywords"
+      content="Panos Georgakopoulos, software engineer, AI engineer, machine learning, applied AI, backend developer, software engineering internship, Java, Spring Boot, Next.js, Python, University of Piraeus, Athens, maritime software, laytime demurrage"
+    />
+    <meta name="author" content="Panagiotis Sergios Georgakopoulos" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://panosgeorgakopoulos.gr/" />
 
-    <meta property="og:type" content="website" />
+    <!-- Set before first paint: scroll-reveal hides content only when JS can
+         reveal it again. Without this class the page renders fully visible. -->
+    <script>
+      document.documentElement.classList.add('js');
+    </script>
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://panosgeorgakopoulos.gr/" />
-    <meta property="og:title" content="Panos Georgakopoulos | Software Engineer" />
-    <meta property="og:description" content="Full Stack Engineer specializing in robust software architecture. Explore my projects in Java, Python, and React." />
-    <meta property="og:image" content="https://panosgeorgakopoulos.gr/og-image.png" />
+    <meta property="og:title" content="Panos Georgakopoulos | Software Engineer · Applied AI" />
+    <meta
+      property="og:description"
+      content="Software engineering and applied AI — backend services, ML pipelines and LLM systems. Currently building LayGrounded, an AI laytime and demurrage engine."
+    />
+    <meta property="og:image" content="https://panosgeorgakopoulos.gr/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Panos Georgakopoulos Portfolio" />
+    <meta property="og:image:alt" content="Panos Georgakopoulos — Software Engineer · Applied AI" />
+    <meta property="og:site_name" content="Panos Georgakopoulos" />
+    <meta property="og:locale" content="en_GB" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://panosgeorgakopoulos.gr/" />
-    <meta name="twitter:title" content="Panos Georgakopoulos | Software Engineer" />
-    <meta name="twitter:description" content="Full Stack Engineer specializing in robust software architecture. Explore my projects in Java, Python, and React." />
-    <meta name="twitter:image" content="https://panosgeorgakopoulos.gr/og-image.png" />
+    <meta name="twitter:site" content="@panosgeorgakop7" />
+    <meta name="twitter:title" content="Panos Georgakopoulos | Software Engineer · Applied AI" />
+    <meta
+      name="twitter:description"
+      content="Software engineering and applied AI. Currently building LayGrounded, an AI laytime and demurrage engine."
+    />
+    <meta name="twitter:image" content="https://panosgeorgakopoulos.gr/og-image.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Panagiotis Sergios Georgakopoulos",
+        "alternateName": "Panos Georgakopoulos",
+        "jobTitle": "Software Engineer · Applied AI",
+        "description": "Fourth-year Computer Science student at the University of Piraeus working in software engineering and applied AI — backend services, machine-learning pipelines and LLM systems. Currently building an AI laytime and demurrage engine for dry bulk chartering.",
+        "url": "https://panosgeorgakopoulos.gr/",
+        "image": "https://panosgeorgakopoulos.gr/og-image.jpg",
+        "email": "mailto:pangegeorg@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Athens",
+          "addressCountry": "GR"
+        },
+        "affiliation": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Piraeus",
+          "sameAs": "https://www.unipi.gr/"
+        },
+        "alumniOf": [
+          { "@type": "EducationalOrganization", "name": "Lycée Léonin, Nea Smyrni" }
+        ],
+        "seeks": {
+          "@type": "Demand",
+          "name": "Software engineering, AI/ML, data or product engineering internship"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "LayGrounded",
+          "description": "AI laytime & demurrage claims engine for dry bulk chartering"
+        },
+        "knowsAbout": [
+          "Software Engineering",
+          "Java",
+          "Python",
+          "TypeScript",
+          "Spring Boot",
+          "Next.js",
+          "PostgreSQL",
+          "Machine Learning",
+          "Charter party laytime and demurrage",
+          "GENCON 94",
+          "Voyage operations"
+        ],
+        "knowsLanguage": [
+          { "@type": "Language", "name": "Greek" },
+          { "@type": "Language", "name": "English" },
+          { "@type": "Language", "name": "French" }
+        ],
+        "sameAs": [
+          "https://github.com/panosgeorgakopoulos",
+          "https://linkedin.com/in/panosgeorgakopoulos",
+          "https://x.com/panosgeorgakop7"
+        ]
+      }
+    </script>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N97G96T3CN"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-N97G96T3CN');
-    </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Space Grotesk', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              neon: {
-                cyan: '#00f0ff',
-                purple: '#bd00ff',
-                green: '#00ff94',
-                bg: '#050505',
-                card: '#0a0a0a',
-                border: '#ffffff1a'
-              }
-            },
-            backgroundImage: {
-              'grid-pattern': "linear-gradient(to right, #ffffff05 1px, transparent 1px), linear-gradient(to bottom, #ffffff05 1px, transparent 1px)",
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'spin-slow': 'spin 10s linear infinite',
-              'scan': 'scan 4s linear infinite',
-              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-            },
-            keyframes: {
-              scan: {
-                '0%': { transform: 'translateY(-100%)' },
-                '100%': { transform: 'translateY(100%)' },
-              },
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(40px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
-            }
-          }
-        }
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
+      gtag('js', new Date());
+      gtag('config', 'G-N97G96T3CN');
     </script>
-    <style>
-      html { scroll-behavior: smooth; }
-      body { background-color: #050505; color: #e2e8f0; overflow-x: hidden; }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #050505; }
-      ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
-      
-      .glass {
-        background: rgba(10, 10, 10, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .perspective-container { perspective: 1000px; }
-    </style>
-
-<link rel="stylesheet" href="/index.css">
-  <script type="importmap">
-
-</script>
-  <script type="module" crossorigin src="/assets/index-C4UjFHnU.js"></script>
-</head>
+    <script type="module" crossorigin src="/assets/index-xJHRvqZD.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-ComthjTj.css">
+  </head>
   <body>
     <div id="root"></div>
-</body>
+  </body>
 </html>
