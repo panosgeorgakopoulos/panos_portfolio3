@@ -13,8 +13,12 @@ const Education: React.FC = () => {
       id="education"
       ref={ref}
       aria-labelledby="education-heading"
-      className="relative z-40 flex min-h-screen flex-col justify-center border-t border-white/10 bg-black py-24 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)]"
+      className="relative z-40 flex min-h-screen flex-col justify-center overflow-hidden border-t border-white/10 bg-black py-24 shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.5)]"
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-grid-pattern bg-[size:80px_80px] opacity-25"
+      />
       <div
         className={`mx-auto w-full max-w-6xl px-6 ${isVisible ? 'is-revealed' : ''}`}
       >

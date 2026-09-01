@@ -11,6 +11,7 @@ import {
   Linkedin,
   Mail,
   Phone,
+  Printer,
   Search,
   Sparkles,
   Workflow,
@@ -117,6 +118,19 @@ const CommandPalette: React.FC = () => {
         run: () => {
           close();
           window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+      },
+      {
+        id: 'print',
+        label: 'Print / save as PDF',
+        group: 'Actions',
+        icon: Printer,
+        hint: 'A clean CV',
+        keywords: 'cv resume download pdf export',
+        run: () => {
+          close();
+          // Let the overlay unmount before the print dialog snapshots the page.
+          setTimeout(() => window.print(), 120);
         },
       },
       {

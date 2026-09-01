@@ -41,7 +41,7 @@ const DecryptedText: React.FC<{ text: string; className?: string }> = ({ text, c
 
     let iteration = 0;
     const interval = window.setInterval(() => {
-      // Written straight to the DOM: this ticks ~25x/sec and does not need to
+      // Written straight to the DOM: this ticks ~33x/sec and does not need to
       // go through React's render cycle.
       node.textContent = text
         .split('')
@@ -54,8 +54,8 @@ const DecryptedText: React.FC<{ text: string; className?: string }> = ({ text, c
         node.textContent = text;
         window.clearInterval(interval);
       }
-      iteration += 1 / 3;
-    }, 40);
+      iteration += 1;
+    }, 30);
 
     return () => window.clearInterval(interval);
   }, [text]);
@@ -209,7 +209,12 @@ const Hero: React.FC = () => {
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-24 md:py-0">
-          <div className={`max-w-3xl space-y-7 ${hasEntered ? 'is-revealed' : ''}`}>
+          <div
+            className={`grid items-end gap-10 xl:grid-cols-[minmax(0,44rem)_minmax(0,1fr)] xl:gap-16 ${
+              hasEntered ? 'is-revealed' : ''
+            }`}
+          >
+            <div className="max-w-3xl space-y-7">
             <div
               style={{ '--i': 0 } as React.CSSProperties}
               className="reveal-item flex flex-wrap items-center gap-3"
@@ -231,7 +236,7 @@ const Hero: React.FC = () => {
               style={{ '--i': 1 } as React.CSSProperties}
               className="reveal-item font-display text-[clamp(1.9rem,8.5vw,2.75rem)] font-light leading-[0.92] tracking-tighter sm:text-6xl lg:text-7xl"
             >
-              <span className="block text-white/90">I AM</span>
+              <span className="block text-white/90 print:hidden">I AM</span>
               <DecryptedText
                 text={RESUME_DATA.name.toUpperCase()}
                 className="block bg-gradient-to-r from-neon-cyan via-white to-neon-purple bg-clip-text font-bold text-transparent text-glow"
@@ -246,9 +251,17 @@ const Hero: React.FC = () => {
               <span className="mt-2 block text-base text-slate-400">{RESUME_DATA.tagline}</span>
             </p>
 
+            {/* Printed CVs need the contact line at the top; on screen it lives
+                in the footer, where it belongs. */}
+            <p className="print-only hidden">
+              {RESUME_DATA.fullName} · {RESUME_DATA.location} · {RESUME_DATA.email} ·{' '}
+              {RESUME_DATA.phone} · {RESUME_DATA.socials.website.replace('https://', '')} ·{' '}
+              {RESUME_DATA.socials.linkedin.replace('https://', '')}
+            </p>
+
             <div
               style={{ '--i': 4 } as React.CSSProperties}
-              className="reveal-item flex flex-wrap items-center gap-3 pt-2"
+              className="reveal-item flex flex-wrap items-center gap-3 pt-2 print:hidden"
             >
               <a href="#projects" {...spotlight} className="btn btn-primary group">
                 View selected work
@@ -277,7 +290,9 @@ const Hero: React.FC = () => {
               </span>
             </button>
 
-            <dl className="grid max-w-xl grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
+            </div>
+
+            <dl className="grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4 xl:max-w-none xl:grid-cols-2 xl:pb-2">
               {STATS.map((stat, index) => (
                 <StatTile key={stat.label} stat={stat} index={index} started={hasEntered} />
               ))}

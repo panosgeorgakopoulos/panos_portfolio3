@@ -1,5 +1,71 @@
 @import 'tailwindcss';
 
+/* ── Self-hosted fonts ────────────────────────────────────────────────────
+   Variable woff2 files served from this origin instead of fonts.gstatic.com.
+   Google's stylesheet cost a second cross-origin round trip before a single
+   glyph could start downloading; these are discovered in the same CSS the page
+   already blocks on, and the two faces that carry the visible type are
+   preloaded from index.html.
+
+   One file per family per subset — each is a variable font covering the whole
+   weight range, so `font-weight: 100 900` is not an approximation. The
+   `unicode-range` on the -ext faces means they are only fetched if a character
+   outside Latin-1 actually appears.                                        */
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ── Design tokens ────────────────────────────────────────────────────────
    Tailwind v4 reads these directly: `--color-neon-cyan` produces
    `text-neon-cyan`, `bg-neon-cyan`, `border-neon-cyan`, and so on.        */
@@ -437,6 +503,155 @@
 
   #hero-spacer {
     display: none;
+  }
+}
+
+/* ── Print ────────────────────────────────────────────────────────────────
+   Cmd/Ctrl+P produces a clean CV rather than a screenshot of a dark website:
+   the decoration, navigation and interactive chrome come off, the fixed hero
+   drops into flow, and the type inverts to black on white. This is why the
+   site does not ship the source .docx — the document is the page itself.   */
+@media print {
+  /* Chrome needs this to honour the colours we do keep. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    overflow: visible !important;
+  }
+
+  /* Chrome, navigation and pure decoration. */
+  header,
+  #hero-spacer,
+  #mobile-menu,
+  [role='dialog'],
+  .btn,
+  .animate-marquee,
+  #process ol,
+  #process button,
+  a[aria-label='Scroll to experience'],
+  [aria-hidden='true'] {
+    display: none !important;
+  }
+
+  /* The deck of cards is a screen conceit; on paper it is one document. */
+  #hero,
+  section {
+    position: static !important;
+    z-index: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 0 1.5rem !important;
+    border: 0 !important;
+    background: #fff !important;
+    break-inside: auto;
+  }
+
+  main > section + section {
+    border-top: 1px solid #ddd !important;
+    padding-top: 1.25rem !important;
+  }
+
+  /* Reveal animations never run without JS timing on paper. */
+  .reveal-item {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: #000 !important;
+    break-after: avoid;
+  }
+
+  h1 {
+    font-size: 22pt !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* Every control is dead on paper. */
+  button,
+  kbd {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  h2 {
+    font-size: 15pt !important;
+    letter-spacing: 0 !important;
+  }
+
+  h3 {
+    font-size: 12pt !important;
+  }
+
+  p,
+  li,
+  dd,
+  dt,
+  a,
+  span {
+    color: #1a1a1a !important;
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
+  }
+
+  /* More specific than the rule above, so headings keep their own size. */
+  h1 span,
+  h2 span,
+  h3 span {
+    color: #000 !important;
+    font-size: inherit !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Neon accents are ~1.4:1 on white. Print them as ink. */
+  .text-neon-cyan,
+  .text-neon-green,
+  .text-neon-purple,
+  .text-neon-purple-text {
+    color: #444 !important;
+  }
+
+  /* Gradient-clipped headings print as blank without this. */
+  .bg-clip-text {
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+    color: #000 !important;
+  }
+
+  li,
+  .spotlight {
+    break-inside: avoid;
+    border-color: #ddd !important;
+    background: #fff !important;
+  }
+
+  /* Hidden pipeline stages are part of the record on paper. */
+  #process [hidden] {
+    display: block !important;
+    margin-top: 0.75rem;
+  }
+
+  @page {
+    margin: 14mm;
   }
 }
 

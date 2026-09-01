@@ -11,7 +11,11 @@ React 19 · TypeScript · Vite 6 · Tailwind CSS v4 · lucide-react
 
 Press <kbd>⌘K</kbd> (or <kbd>Ctrl</kbd>+<kbd>K</kbd>) anywhere on the site to
 open the command palette — jump to a section, copy the email or phone number,
-or open a profile.
+open a profile, or print. <kbd>⌘P</kbd> renders the page as a clean CV, which is
+why the source `.docx` is not in this repo.
+
+Fonts are self-hosted from `public/fonts/`; the page makes no cross-origin
+requests other than analytics.
 
 No router, no backend. Builds to static files served by GitHub Pages from the
 `gh-pages` branch. The single route is prerendered at build time, so the HTML

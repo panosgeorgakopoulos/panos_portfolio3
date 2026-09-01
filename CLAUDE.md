@@ -43,6 +43,9 @@ entry-server.tsx   SSR entry used only by the prerender step
 scripts/
   prerender.mjs      Injects the rendered markup into dist/index.html
 public/        ← Copied verbatim to dist/. CNAME must stay for the custom domain.
+  fonts/       Self-hosted variable woff2 (see "Fonts" below)
+  404.html     Redirects stray URLs back to /
+  site.webmanifest
 ```
 
 ### Content is data, not markup
@@ -87,6 +90,23 @@ default z scale stops at 50.)
 `` `border-${accent}` `` generates nothing. Accent colours go through the
 `ACCENTS` map in `components/accents.ts`, which holds complete class strings.
 Add a field there rather than composing a class name at a call site.
+
+**Fonts are self-hosted; do not add a Google Fonts `<link>` back.** Three
+variable woff2 files live in `public/fonts/` with `@font-face` rules at the top
+of `index.css`, and `index.html` preloads the two that carry visible type. Each
+family also has a `-latin-ext` file that `unicode-range` keeps unfetched unless
+a character outside Latin-1 appears — the current copy never triggers it, so the
+real cost is 102 kB across three same-origin requests with no cross-origin round
+trip. To change weights you do not need new files: these are variable fonts
+declared `font-weight: 100 900`.
+
+**`Cmd/Ctrl+P` is the CV.** The `@media print` block in `index.css` strips the
+chrome, un-fixes the hero, inverts to black on white, expands the hidden
+pipeline stages, and reveals a `.print-only` contact line in the hero. That is
+deliberately why the repo does not ship `Georgakopoulos_CV.docx` — the document
+is the page. If you add a section, check it prints: the usual failures are
+white-on-white text (a `text-white/*` span inside a heading) and a wrapper that
+survives while its children are hidden.
 
 **The page is prerendered, so components must be SSR-safe.** `npm run build`
 runs `vite build`, then `vite build --ssr entry-server.tsx`, then

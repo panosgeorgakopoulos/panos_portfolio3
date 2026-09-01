@@ -38,12 +38,19 @@ export const RESUME_DATA: ResumeData = {
   },
 };
 
+/**
+ * Accent colours are semantic, not decorative — keep them that way:
+ *   cyan   engineering, platform, the primary call to action
+ *   purple AI and machine learning
+ *   green  product, domain knowledge, credentials
+ */
+
 /** Headline figures. Every value here must be traceable to the CV. */
 export const STATS: Stat[] = [
   { value: '8.0', label: 'GPA / 10', accent: 'cyan' },
-  { value: '185', label: 'ECTS earned', accent: 'purple' },
+  { value: '185', label: 'ECTS earned', accent: 'cyan' },
   { value: '37/37', label: 'Courses passed', accent: 'green' },
-  { value: '3', label: 'Languages', accent: 'cyan' },
+  { value: '3', label: 'Languages', accent: 'green' },
 ];
 
 export const EXPERIENCES: Experience[] = [
@@ -56,7 +63,7 @@ export const EXPERIENCES: Experience[] = [
     current: true,
     bullets: [
       'Shipped a vision-language document pipeline that extracts port events from PDF Statements of Facts as editable, source-traceable suggestions, with schema-validated output and automatic model fallback for resilience.',
-      'Implemented a deterministic, dependency-pure rules engine covering GENCON 94 and ASBATANKVOY — NOR validity, timezone-aware SHEX/SSHEX exclusions, weather and shifting exceptions, once-on-demurrage — published as a standalone open-source package and reproducible under counterparty scrutiny.',
+      'Implemented a deterministic, dependency-pure rules engine covering GENCON 94 and ASBATANKVOY charter terms — notice validity, timezone-aware exclusion periods, weather and shifting exceptions, demurrage triggers — published as a standalone open-source package and reproducible under counterparty scrutiny.',
       'Architected the full multi-tenant stack solo (RLS-enforced tenancy, Dockerised production build), adding clause flagging by severity, time-bar tracking, sensitivity analysis, and LLM-drafted claim correspondence with source citations.',
       'Extending into independent verification of claimed facts — weather archive cross-checks, AIS vessel movement, and sanctions screening — so each line of a claim is backed by third-party evidence rather than the counterparty’s own SOF.',
     ],
@@ -102,7 +109,7 @@ export const PROJECTS: Project[] = [
     id: 'island-drive',
     title: 'Island Drive Rentals',
     subtitle: 'Vehicle Rental Platform',
-    accent: 'purple',
+    accent: 'green',
     bullets: [
       'Delivered a production booking platform with RBAC, a dynamic pricing engine and atomic booking transactions.',
       'Integrated Stripe Checkout validated by webhook integrity checks, with i18n coverage across 8 languages.',
@@ -113,7 +120,7 @@ export const PROJECTS: Project[] = [
     id: 'risk-classifier',
     title: 'Financial Transaction Risk Classifier',
     subtitle: 'Applied ML Pipeline',
-    accent: 'green',
+    accent: 'purple',
     bullets: [
       'Built a leak-proof classification pipeline (feature engineering, scaling, one-hot encoding, log transforms).',
       'Structured it as a modular four-layer architecture that allows classifiers to be swapped without touching business logic.',
@@ -124,7 +131,7 @@ export const PROJECTS: Project[] = [
     id: 'cyberbus',
     title: 'CYBERBUS',
     subtitle: 'Smart Transit PWA',
-    accent: 'cyan',
+    accent: 'purple',
     bullets: [
       'Developed a progressive web app with separate passenger and driver interfaces.',
       'Integrated Gemini Vision for real-time landmark recognition and a conversational guide, with no dedicated ML backend.',
@@ -156,7 +163,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'backend',
     label: 'Backend & Data',
-    accent: 'green',
+    accent: 'cyan',
     items: [
       'Spring Boot',
       'FastAPI',
@@ -177,7 +184,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'platform',
     label: 'Platform & Tooling',
-    accent: 'purple',
+    accent: 'cyan',
     items: ['Docker', 'Git', 'Maven', 'Supabase', 'Cloudflare Workers'],
   },
   {
@@ -205,7 +212,7 @@ export const PIPELINE: PipelineStage[] = [
     title: 'A scanned Statement of Facts arrives',
     body: 'The port agent sends a PDF — often a photocopy of a fax. Every hour of laytime in the eventual claim traces back to this one document.',
     tags: ['PDF', 'Multi-tenant intake'],
-    accent: 'cyan',
+    accent: 'green',
   },
   {
     id: 'extract',
@@ -221,7 +228,7 @@ export const PIPELINE: PipelineStage[] = [
     title: 'A deterministic rules engine applies the charter party',
     body: 'NOR validity, timezone-aware SHEX/SSHEX exclusions, weather and shifting exceptions, once on demurrage. Dependency-pure, so the same inputs always produce the same statement.',
     tags: ['GENCON 94', 'ASBATANKVOY', 'Open source'],
-    accent: 'green',
+    accent: 'cyan',
   },
   {
     id: 'verify',
@@ -229,7 +236,7 @@ export const PIPELINE: PipelineStage[] = [
     title: 'Third-party evidence checks the counterparty',
     body: 'Weather archives, AIS vessel movement and sanctions screening test the claimed facts independently — so a line is backed by evidence, not just by the other side’s own SOF.',
     tags: ['Weather archive', 'AIS', 'Sanctions screening'],
-    accent: 'cyan',
+    accent: 'green',
   },
   {
     id: 'claim',
