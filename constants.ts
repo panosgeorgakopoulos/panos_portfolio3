@@ -9,6 +9,7 @@ import type {
   EducationEntry,
   Experience,
   LanguageEntry,
+  PipelineStage,
   Project,
   ResumeData,
   SkillGroup,
@@ -192,6 +193,54 @@ export const SKILL_GROUPS: SkillGroup[] = [
   },
 ];
 
+/**
+ * How LayGrounded turns a scanned Statement of Facts into a defensible claim.
+ * Every stage is drawn from the LayGrounded bullets above — nothing here
+ * describes work that the CV does not.
+ */
+export const PIPELINE: PipelineStage[] = [
+  {
+    id: 'intake',
+    label: 'Intake',
+    title: 'A scanned Statement of Facts arrives',
+    body: 'The port agent sends a PDF — often a photocopy of a fax. Every hour of laytime in the eventual claim traces back to this one document.',
+    tags: ['PDF', 'Multi-tenant intake'],
+    accent: 'cyan',
+  },
+  {
+    id: 'extract',
+    label: 'Extract',
+    title: 'A vision-language model reads the port events',
+    body: 'Events come back as editable, source-traceable suggestions rather than silent overwrites. Output is schema-validated, and the model falls back automatically if a call fails.',
+    tags: ['Gemini Vision', 'Schema validation', 'Model fallback'],
+    accent: 'purple',
+  },
+  {
+    id: 'compute',
+    label: 'Compute',
+    title: 'A deterministic rules engine applies the charter party',
+    body: 'NOR validity, timezone-aware SHEX/SSHEX exclusions, weather and shifting exceptions, once on demurrage. Dependency-pure, so the same inputs always produce the same statement.',
+    tags: ['GENCON 94', 'ASBATANKVOY', 'Open source'],
+    accent: 'green',
+  },
+  {
+    id: 'verify',
+    label: 'Verify',
+    title: 'Third-party evidence checks the counterparty',
+    body: 'Weather archives, AIS vessel movement and sanctions screening test the claimed facts independently — so a line is backed by evidence, not just by the other side’s own SOF.',
+    tags: ['Weather archive', 'AIS', 'Sanctions screening'],
+    accent: 'cyan',
+  },
+  {
+    id: 'claim',
+    label: 'Claim',
+    title: 'The claim drafts itself, with citations',
+    body: 'Clause flagging by severity, time-bar tracking and sensitivity analysis feed an LLM-drafted letter that cites the source line behind every figure.',
+    tags: ['Time-bar tracking', 'Sensitivity analysis', 'Cited drafting'],
+    accent: 'purple',
+  },
+];
+
 export const EDUCATION: EducationEntry[] = [
   {
     id: 'piraeus',
@@ -226,6 +275,7 @@ export const LANGUAGES: LanguageEntry[] = [
 
 export const NAV_ITEMS = [
   { label: 'Experience', href: '#experience' },
+  { label: 'Process', href: '#process' },
   { label: 'Stack', href: '#skills' },
   { label: 'Work', href: '#projects' },
   { label: 'Education', href: '#education' },

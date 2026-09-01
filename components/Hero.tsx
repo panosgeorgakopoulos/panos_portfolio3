@@ -4,9 +4,28 @@ import { RESUME_DATA, STATS } from '../constants';
 import { ACCENTS } from './accents';
 import { openCommandPalette } from './CommandPalette';
 import { useCountUp } from './useCountUp';
+import { spotlight } from './spotlight';
 import type { Stat } from '../types';
 
+/** Keeps serialised style strings byte-identical between server and client. */
+const round = (n: number) => Math.round(n * 1000) / 1000;
+
 const CHARS = '-_~`!@#$%^&*()+=[]{}|;:,.<>?/0123456789';
+
+/**
+ * Deterministic PRNG (mulberry32). The particle field used Math.random, which
+ * meant the prerendered markup and the client's first render disagreed and
+ * hydration threw the whole field away. A fixed seed keeps the look identical
+ * and the markup stable.
+ */
+function seeded(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
@@ -95,19 +114,26 @@ const Hero: React.FC = () => {
   const frameRef = useRef(0);
 
   // Decoration only; generated once and never re-rendered.
-  const particles = useMemo<Particle[]>(
-    () =>
-      Array.from({ length: 28 }).map((_, i) => ({
+  const particles = useMemo<Particle[]>(() => {
+    const random = seeded(0x50414e4f);
+    return Array.from({ length: 28 }).map((_, i) => {
+      const x = random() * 100;
+      const y = random() * 100;
+      const size = random() * 2 + 1;
+      const opacity = random() * 0.5 + 0.12;
+      const speed = (random() - 0.5) * 40;
+      const hue = random();
+      return {
         id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.5 + 0.12,
-        speed: (Math.random() - 0.5) * 40,
-        color: Math.random() > 0.6 ? '#00f0ff' : Math.random() > 0.3 ? '#bd00ff' : '#ffffff',
-      })),
-    [],
-  );
+        x: round(x),
+        y: round(y),
+        size: round(size),
+        opacity: round(opacity),
+        speed: round(speed),
+        color: hue > 0.6 ? '#00f0ff' : hue > 0.3 ? '#bd00ff' : '#ffffff',
+      };
+    });
+  }, []);
 
   /**
    * Pointer parallax writes CSS custom properties on the section and lets CSS
@@ -224,11 +250,11 @@ const Hero: React.FC = () => {
               style={{ '--i': 4 } as React.CSSProperties}
               className="reveal-item flex flex-wrap items-center gap-3 pt-2"
             >
-              <a href="#projects" className="btn btn-primary group">
+              <a href="#projects" {...spotlight} className="btn btn-primary group">
                 View selected work
                 <ArrowRight size={15} className="btn-icon" aria-hidden="true" />
               </a>
-              <a href={`mailto:${RESUME_DATA.email}`} className="btn btn-ghost">
+              <a href={`mailto:${RESUME_DATA.email}`} {...spotlight} className="btn btn-ghost">
                 <Mail size={15} aria-hidden="true" />
                 Get in touch
               </a>

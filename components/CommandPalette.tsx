@@ -13,6 +13,7 @@ import {
   Phone,
   Search,
   Sparkles,
+  Workflow,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { NAV_ITEMS, RESUME_DATA } from '../constants';
@@ -36,6 +37,7 @@ type Command = {
 
 const SECTION_ICONS: Record<string, LucideIcon> = {
   '#experience': Award,
+  '#process': Workflow,
   '#skills': Braces,
   '#projects': Sparkles,
   '#education': GraduationCap,

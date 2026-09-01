@@ -79,6 +79,20 @@ export interface EducationEntry {
   details: string[];
 }
 
+/** One stage of the LayGrounded pipeline, rendered by the Process section. */
+export interface PipelineStage {
+  id: string;
+  /** Short label on the track. */
+  label: string;
+  /** Headline for the detail panel. */
+  title: string;
+  /** Two sentences at most — this reads while it auto-advances. */
+  body: string;
+  /** Technologies doing the work at this stage. */
+  tags: string[];
+  accent: Accent;
+}
+
 export interface Certification {
   name: string;
   issuer: string;

@@ -12,7 +12,7 @@ React 19 + TypeScript + Vite 6 + Tailwind CSS v4. No router, no backend, no test
 | ------------------- | --------------------------------------------------- |
 | `npm run dev`       | Vite dev server with HMR                            |
 | `npm run typecheck` | `tsc --noEmit` — run this before claiming done      |
-| `npm run build`     | Typechecks, then builds to `dist/`                  |
+| `npm run build`     | Typechecks, builds `dist/`, then prerenders into it  |
 | `npm run preview`   | Serves the built `dist/` (verify here, not in dev)  |
 | `npm run deploy`    | Builds and pushes `dist/` to the `gh-pages` branch  |
 
@@ -29,15 +29,19 @@ components/
   ScrollProgress.tsx Hairline reading-progress bar
   Hero.tsx           Fixed hero, pointer parallax, scramble text
   Experience.tsx     01 / Career
-  Skills.tsx         02 / Capabilities
-  Projects.tsx       03 / Portfolio
-  Education.tsx      04 / Credentials
+  Process.tsx        02 / Process — animated LayGrounded pipeline
+  Skills.tsx         03 / Capabilities
+  Projects.tsx       04 / Portfolio
+  Education.tsx      05 / Credentials
   Contact.tsx        Footer + CTA
   SectionHeading.tsx Shared section header
   accents.ts         Accent token → literal Tailwind class strings
   useReveal.ts       Shared scroll-reveal IntersectionObserver
   useCountUp.ts      Hero stat count-up (snaps under reduced motion)
   spotlight.ts       Pointer-tracked card highlight (writes --mx/--my)
+entry-server.tsx   SSR entry used only by the prerender step
+scripts/
+  prerender.mjs      Injects the rendered markup into dist/index.html
 public/        ← Copied verbatim to dist/. CNAME must stay for the custom domain.
 ```
 
@@ -72,7 +76,7 @@ replaced with the CV's own skill groupings. Don't reintroduce invented metrics �
 full-height spacer after it (below `md` it is in normal flow and the spacer is
 hidden — a phone viewport is too short to hold the hero content inside a
 clipped, fixed `h-screen` box, and the content was being cut off); every following section is opaque and carries an increasing z-index
-(`z-10` Experience → `z-50` Contact) so each scrolls up over the previous one.
+(`z-10` Experience → `z-[15]` Process → `z-50` Contact) so each scrolls up over the previous one.
 Adding a section means inserting it in `App.tsx` **and** giving it the next
 z-index in the run. The navbar sits at `z-70` and the mobile overlay at `z-60`,
 above the whole deck — a section at `z-50` or higher will swallow the nav's
@@ -84,12 +88,34 @@ default z scale stops at 50.)
 `ACCENTS` map in `components/accents.ts`, which holds complete class strings.
 Add a field there rather than composing a class name at a call site.
 
+**The page is prerendered, so components must be SSR-safe.** `npm run build`
+runs `vite build`, then `vite build --ssr entry-server.tsx`, then
+`scripts/prerender.mjs`, which renders the app once and injects ~85 KB of markup
+into `dist/index.html`; `index.tsx` hydrates it. That means: no `window` or
+`document` at module scope or during render (guard it in an effect), and
+**nothing random or time-dependent in render output** — the hero's particle
+field uses a seeded PRNG for exactly this reason, and `useCountUp` starts at the
+final value so the prerendered HTML carries the real figure. A hydration
+mismatch shows up as a console error and React throwing the server markup away.
+If you add a stepper or tab UI, render every panel and `hidden` the inactive
+ones so their copy still reaches crawlers.
+
 **Buttons come from the system, not from utilities.** `.btn` + `.btn-primary` /
-`.btn-ghost` / `.btn-sm` live in `@layer components` in `index.css`. Primary is a
-light surface with a cyan sheen sweep; ghost is glass with a hairline border.
-Do not hand-roll a new button out of `rounded-full bg-neon-cyan px-6 py-3 …` —
-that neon-pill look is what the system replaced. An arrow inside a button gets
-`className="btn-icon"` so it slides on hover.
+`.btn-ghost` / `.btn-sm` live in `@layer components` in `index.css`. They are
+liquid glass: a blurred, saturated backdrop, a 1px refractive rim drawn with a
+`mask-composite` gradient border, and a specular highlight that follows the
+pointer via `--mx`/`--my` (spread `{...spotlight}` onto the element to feed it).
+`transform` is composed from `--btn-lift` and `--btn-squish` so hover-lift and
+press-squish set independently; the press is fast and linear, the release
+springs back through `--ease-spring`. An arrow inside a button gets
+`className="btn-icon"` so it slides on hover. Do not hand-roll a new button out
+of `rounded-full bg-neon-cyan px-6 py-3 …` — that neon-pill look is what this
+replaced.
+
+**Order the `-webkit-` prefix *before* the standard property.** lightningcss
+collapses a prefixed/unprefixed pair to whichever comes last. With
+`backdrop-filter` written first, only `-webkit-backdrop-filter` survived and
+Chrome ignored it — the glass silently rendered flat.
 
 **Reveal animation must never be the only thing making content visible.**
 `index.html` adds `class="js"` to `<html>` before first paint, and the hidden

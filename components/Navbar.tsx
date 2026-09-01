@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Cpu, Menu, Search, X } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { openCommandPalette } from './CommandPalette';
+import { spotlight } from './spotlight';
 
 /** Hoisted so the scroll-spy observer is not torn down on every re-render. */
 const NAV_HREFS = NAV_ITEMS.map((item) => item.href);
@@ -118,7 +119,7 @@ const Navbar: React.FC = () => {
       {/* Desktop */}
       <nav
         aria-label="Main"
-        className="fixed left-1/2 top-6 z-70 hidden w-auto -translate-x-1/2 md:block"
+        className="fixed left-1/2 top-6 z-70 hidden w-auto -translate-x-1/2 lg:block"
       >
         <div className="glass flex items-center gap-8 rounded-full px-7 py-3.5 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
           <a href="#" onClick={scrollToTop} className="group flex items-center gap-2">
@@ -155,7 +156,7 @@ const Navbar: React.FC = () => {
               </kbd>
             </button>
 
-            <a href="#contact" className="btn btn-primary btn-sm">
+            <a href="#contact" {...spotlight} className="btn btn-primary btn-sm">
               Hire me
             </a>
           </div>
@@ -163,7 +164,7 @@ const Navbar: React.FC = () => {
       </nav>
 
       {/* Mobile header */}
-      <div className="glass fixed inset-x-0 top-0 z-70 flex h-16 items-center justify-between px-6 md:hidden">
+      <div className="glass fixed inset-x-0 top-0 z-70 flex h-16 items-center justify-between px-6 lg:hidden">
         <a href="#" onClick={scrollToTop} className="group flex items-center gap-2">
           {logo}
           <span className="sr-only">Back to top</span>
@@ -203,7 +204,7 @@ const Navbar: React.FC = () => {
         id="mobile-menu"
         ref={overlayRef}
         hidden={!isMenuOpen}
-        className="fixed inset-0 z-60 flex animate-fade-in-up flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl md:hidden"
+        className="fixed inset-0 z-60 flex animate-fade-in-up flex-col items-center justify-center gap-8 bg-black/95 backdrop-blur-xl lg:hidden"
       >
         <nav aria-label="Mobile">
           <ul className="flex flex-col items-center gap-8">
@@ -222,6 +223,7 @@ const Navbar: React.FC = () => {
         </nav>
         <a
           href="#contact"
+          {...spotlight}
           className="btn btn-primary mt-4"
           onClick={() => setIsMenuOpen(false)}
         >

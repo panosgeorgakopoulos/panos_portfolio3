@@ -3,6 +3,7 @@ import { ArrowRight, Command, Github, Linkedin, Mail, Phone } from 'lucide-react
 import { RESUME_DATA } from '../constants';
 import { useReveal } from './useReveal';
 import { openCommandPalette } from './CommandPalette';
+import { spotlight } from './spotlight';
 
 const SOCIAL_LINKS = [
   { key: 'email', label: 'Email', icon: Mail, href: `mailto:${RESUME_DATA.email}` },
@@ -56,12 +57,12 @@ const Contact: React.FC = () => {
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <a href={`mailto:${RESUME_DATA.email}`} className="btn btn-primary">
+          <a href={`mailto:${RESUME_DATA.email}`} {...spotlight} className="btn btn-primary">
             <Mail size={16} aria-hidden="true" />
             {RESUME_DATA.email}
             <ArrowRight size={15} className="btn-icon" aria-hidden="true" />
           </a>
-          <button type="button" onClick={openCommandPalette} className="btn btn-ghost">
+          <button type="button" onClick={openCommandPalette} {...spotlight} className="btn btn-ghost">
             <Command size={15} aria-hidden="true" />
             Copy my details
           </button>

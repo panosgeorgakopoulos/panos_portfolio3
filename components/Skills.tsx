@@ -26,7 +26,7 @@ const Skills: React.FC = () => {
       <div
         className={`relative z-10 mx-auto w-full max-w-6xl px-6 ${isVisible ? 'is-revealed' : ''}`}
       >
-        <SectionHeading id="skills-heading" index="02" eyebrow="Capabilities" title="TECH STACK">
+        <SectionHeading id="skills-heading" index="03" eyebrow="Capabilities" title="TECH STACK">
           {RESUME_DATA.summary}
         </SectionHeading>
 

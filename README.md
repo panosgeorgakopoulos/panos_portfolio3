@@ -14,7 +14,9 @@ open the command palette — jump to a section, copy the email or phone number,
 or open a profile.
 
 No router, no backend. Builds to static files served by GitHub Pages from the
-`gh-pages` branch.
+`gh-pages` branch. The single route is prerendered at build time, so the HTML
+carries the full page content for crawlers that do not run JavaScript; the
+client hydrates it.
 
 ## Getting started
 

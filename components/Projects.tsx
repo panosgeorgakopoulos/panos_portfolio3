@@ -26,7 +26,7 @@ const Projects: React.FC = () => {
           isVisible ? 'is-revealed' : ''
         }`}
       >
-        <SectionHeading id="projects-heading" index="03" eyebrow="Portfolio" title="SELECTED WORK" />
+        <SectionHeading id="projects-heading" index="04" eyebrow="Portfolio" title="SELECTED WORK" />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {PROJECTS.map((project, index) => {

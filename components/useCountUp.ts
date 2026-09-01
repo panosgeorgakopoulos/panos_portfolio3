@@ -11,7 +11,10 @@ const NUMERIC = /^(\d+(?:\.\d+)?)(.*)$/s;
  */
 export function useCountUp(value: string, active: boolean, duration = 1100): string {
   const match = NUMERIC.exec(value);
-  const [display, setDisplay] = useState(() => (match ? formatted(0, match[1], match[2]) : value));
+  // Starts at the *final* value so the prerendered markup carries the real
+  // figure (a crawler reading "0.0 GPA" would be worse than no animation) and
+  // hydration matches. The effect below rewinds to zero and counts up.
+  const [display, setDisplay] = useState(value);
   const frameRef = useRef(0);
 
   useEffect(() => {
@@ -26,6 +29,7 @@ export function useCountUp(value: string, active: boolean, duration = 1100): str
 
     const target = Number(match[1]);
     const start = performance.now();
+    setDisplay(formatted(0, match[1], match[2]));
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);

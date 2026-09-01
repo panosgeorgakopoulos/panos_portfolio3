@@ -18,7 +18,7 @@ const Education: React.FC = () => {
       <div
         className={`mx-auto w-full max-w-6xl px-6 ${isVisible ? 'is-revealed' : ''}`}
       >
-        <SectionHeading id="education-heading" index="04" eyebrow="Credentials" title="EDUCATION" />
+        <SectionHeading id="education-heading" index="05" eyebrow="Credentials" title="EDUCATION" />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
           {/* Degrees */}
