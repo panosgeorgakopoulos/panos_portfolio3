@@ -3,108 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07080a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <title>Panos Georgakopoulos | Software Engineer</title>
-    <meta name="description" content="Portfolio of Panos Georgakopoulos, a Full Stack Engineer specializing in Java, Python, and React. Building robust, scalable systems." />
-    <meta name="keywords" content="Software Engineer, Java Developer, Full Stack, React, Python, Panos Georgakopoulos, Portfolio, Greece, Web Development" />
+    <title>Panos Georgakopoulos · AI Engineer</title>
+    <meta name="description" content="Panos Georgakopoulos is an AI engineer in Athens who builds grounded AI systems: the model proposes, deterministic code decides. Projects include LayGrounded, Sophie, MedBot and Nexus." />
+    <meta name="keywords" content="AI Engineer, LLM, RAG, grounded AI, Panos Georgakopoulos, Athens, Greece, TypeScript, Python, startup engineer" />
     <meta name="author" content="Panos Georgakopoulos" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://panosgeorgakopoulos.gr/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://panosgeorgakopoulos.gr/" />
-    <meta property="og:title" content="Panos Georgakopoulos | Software Engineer" />
-    <meta property="og:description" content="Full Stack Engineer specializing in robust software architecture. Explore my projects in Java, Python, and React." />
+    <meta property="og:title" content="Panos Georgakopoulos · AI Engineer" />
+    <meta property="og:description" content="Models propose. Code decides. Grounded AI systems by Panos Georgakopoulos." />
     <meta property="og:image" content="https://panosgeorgakopoulos.gr/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Panos Georgakopoulos Portfolio" />
+    <meta property="og:site_name" content="Panos Georgakopoulos" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://panosgeorgakopoulos.gr/" />
-    <meta name="twitter:title" content="Panos Georgakopoulos | Software Engineer" />
-    <meta name="twitter:description" content="Full Stack Engineer specializing in robust software architecture. Explore my projects in Java, Python, and React." />
+    <meta name="twitter:title" content="Panos Georgakopoulos · AI Engineer" />
+    <meta name="twitter:description" content="Models propose. Code decides. Grounded AI systems by Panos Georgakopoulos." />
     <meta name="twitter:image" content="https://panosgeorgakopoulos.gr/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Panos Georgakopoulos",
+        "jobTitle": "AI Engineer",
+        "url": "https://panosgeorgakopoulos.gr/",
+        "email": "mailto:pangegeorg@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "Athens", "addressCountry": "GR" },
+        "sameAs": [
+          "https://github.com/panosgeorgakopoulos",
+          "https://www.linkedin.com/in/panagiotis-sergios-georgakopoulos/",
+          "https://x.com/panosgeorgakop7"
+        ]
+      }
+    </script>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N97G96T3CN"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-N97G96T3CN');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N97G96T3CN');
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              display: ['Space Grotesk', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              neon: {
-                cyan: '#00f0ff',
-                purple: '#bd00ff',
-                green: '#00ff94',
-                bg: '#050505',
-                card: '#0a0a0a',
-                border: '#ffffff1a'
-              }
-            },
-            backgroundImage: {
-              'grid-pattern': "linear-gradient(to right, #ffffff05 1px, transparent 1px), linear-gradient(to bottom, #ffffff05 1px, transparent 1px)",
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'spin-slow': 'spin 10s linear infinite',
-              'scan': 'scan 4s linear infinite',
-              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-            },
-            keyframes: {
-              scan: {
-                '0%': { transform: 'translateY(-100%)' },
-                '100%': { transform: 'translateY(100%)' },
-              },
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(40px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      html { scroll-behavior: smooth; }
-      body { background-color: #050505; color: #e2e8f0; overflow-x: hidden; }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #050505; }
-      ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
-      
-      .glass {
-        background: rgba(10, 10, 10, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .perspective-container { perspective: 1000px; }
-    </style>
-  <script type="importmap">
-
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <noscript>
+      <p style="padding:24px;color:#e8ecf0;background:#07080a;font-family:system-ui,sans-serif">Panos Georgakopoulos, AI engineer in Athens. Email: pangegeorg@gmail.com · github.com/panosgeorgakopoulos</p>
+    </noscript>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>

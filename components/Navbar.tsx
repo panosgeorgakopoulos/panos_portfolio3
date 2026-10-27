@@ -1,107 +1,80 @@
-import React, { useState } from 'react';
-import { Menu, X, Cpu } from 'lucide-react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { PROFILE, PROJECTS } from '../constants';
+import { useScrollSpy } from '../lib/useScrollSpy';
 
+const LINKS = [
+  { label: 'Work', href: '#work', ids: PROJECTS.map(p => p.slug) },
+  { label: 'More', href: '#more', ids: ['more'] },
+  { label: 'Record', href: '#record', ids: ['record'] },
+];
+const SPY_IDS = ['top', ...LINKS.flatMap(l => l.ids), 'contact'];
+
+// A floating island: a signal orbits its border, and an indicator slides to the section in view.
 const Navbar: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const island = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+  const section = useScrollSpy(SPY_IDS);
+  const active = section ? LINKS.findIndex(l => l.ids.includes(section)) : -1;
+  const [pill, setPill] = useState<{ x: number; w: number } | null>(null);
+  const [compact, setCompact] = useState(false);
 
-  const navItems = [
-    { label: 'Experience', href: '#experience' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Projects', href: '#projects' },
-  ];
+  useEffect(() => {
+    const onScroll = () => setCompact(window.scrollY > 60);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // Helper function to handle smooth scroll to top
-  const scrollToTop = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-    // Update URL hash without jumping (optional, keeps URL clean)
-    history.pushState(null, "", window.location.pathname);
-  };
+  useLayoutEffect(() => {
+    const el = island.current;
+    if (!el) return;
+    const measure = () => {
+      setBox({ w: el.offsetWidth, h: el.offsetHeight });
+      const a = linkRefs.current[active];
+      setPill(a ? { x: a.offsetLeft, w: a.offsetWidth } : null);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [active, compact]);
+
+  const r = box.h / 2;
 
   return (
-    <>
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden md:block w-auto">
-        <div className="glass rounded-full px-8 py-4 flex items-center gap-10 shadow-[0_0_30px_rgba(0,240,255,0.1)] border border-white/10">
-          {/* Logo - Desktop (Fixed) */}
-          <a 
-            href="#" 
-            onClick={scrollToTop} 
-            className="flex items-center gap-2 group cursor-pointer"
-          >
-            <Cpu className="text-neon-cyan group-hover:animate-spin-slow transition-all duration-500" size={20} />
-            <span className="font-display font-bold text-lg tracking-wider text-white">
-              PANOS<span className="text-neon-purple">.DEV</span>
-            </span>
-          </a>
-
-          {/* Desktop Nav */}
-          <div className="flex items-center gap-8">
-            {navItems.map(item => (
-              <a 
-                key={item.label}
-                href={item.href}
-                className="text-xs font-mono uppercase tracking-widest text-slate-400 hover:text-neon-cyan transition-colors"
-              >
-                {item.label}
+    <nav className={`island${compact ? ' is-compact' : ''}`} aria-label="Main">
+      <div className="island-body" ref={island}>
+        {box.w > 0 && (
+          <svg className="island-orbit" width={box.w} height={box.h} aria-hidden>
+            <rect x="0.5" y="0.5" width={box.w - 1} height={box.h - 1} rx={r} pathLength={100} className="orbit-track" />
+            <rect x="0.5" y="0.5" width={box.w - 1} height={box.h - 1} rx={r} pathLength={100} className="orbit-signal" />
+          </svg>
+        )}
+        <a href="#top" className="island-mark" aria-label={`${PROFILE.name}, back to top`}>
+          <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden>
+            <path d="M6 8 L16 16 L6 24 M16 16 L26 16" className="mark-edge" />
+            <circle cx="6" cy="8" r="2.6" className="mark-node" />
+            <circle cx="6" cy="24" r="2.6" className="mark-node" />
+            <circle cx="16" cy="16" r="3.2" className="mark-node" />
+            <circle cx="26" cy="16" r="3.6" className="mark-out" />
+          </svg>
+          <span>PANOS</span>
+        </a>
+        <span className="island-sep" aria-hidden />
+        <ul className="island-links">
+          {pill && <li className="island-pill" aria-hidden style={{ transform: `translateX(${pill.x}px)`, width: pill.w }} />}
+          {LINKS.map((l, i) => (
+            <li key={l.href}>
+              <a ref={el => { linkRefs.current[i] = el; }} href={l.href} className={active === i ? 'is-active' : ''} aria-current={active === i ? 'true' : undefined}>
+                {l.label}
               </a>
-            ))}
-            <a 
-              href="#contact" 
-              className="px-6 py-2 text-xs font-bold uppercase tracking-wider text-black bg-neon-cyan rounded-full hover:bg-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] hover:scale-105"
-            >
-              Hire Me
-            </a>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass border-b border-white/10 px-6 h-16 flex items-center justify-between">
-         {/* Logo - Mobile (Fixed) */}
-         <a 
-            href="#" 
-            onClick={scrollToTop}
-            className="flex items-center gap-2"
-         >
-            <Cpu className="text-neon-cyan" size={20} />
-            <span className="font-display font-bold text-lg tracking-wider text-white">
-              PANOS<span className="text-neon-purple">.DEV</span>
-            </span>
-          </a>
-        <button 
-          className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-fade-in-up">
-           {navItems.map(item => (
-            <a 
-              key={item.label}
-              href={item.href}
-              className="text-3xl font-display font-light text-white hover:text-neon-cyan tracking-widest uppercase transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.label}
-            </a>
+            </li>
           ))}
-          <a 
-            href="#contact" 
-            className="text-xl font-mono text-neon-cyan mt-8 border border-neon-cyan/30 px-8 py-3 rounded-full hover:bg-neon-cyan/10"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            [ INITIATE_CONTACT ]
-          </a>
-        </div>
-      )}
-    </>
+        </ul>
+        <a href="#contact" className="island-cta"><span className="cta-dot" aria-hidden />Contact</a>
+      </div>
+    </nav>
   );
 };
 

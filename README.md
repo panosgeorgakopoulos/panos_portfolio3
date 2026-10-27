@@ -1,32 +1,37 @@
-#  🖥️ Panos Portfolio
+# panosgeorgakopoulos.gr
 
-A high-performance, immersive portfolio website built for a future Full Stack Engineer. This project features a futuristic, neon-cyberpunk aesthetic with smooth scroll animations, interactive 3D elements, and a responsive "deck of cards" layout.
+Personal site of Panos Georgakopoulos, AI engineer.
 
-## ✨ Features
+The hero is a live 3D neural network (three.js, loaded lazily, with a 2D canvas fallback for reduced motion or no WebGL), built from the actual portfolio: skills feed projects, projects feed capabilities, capabilities feed the roles being sought. It assembles on load and keeps running forward passes. Drag to orbit, hover or tap a node to trace its path and open its card, click a skill or capability to pin it, or fire a full forward pass. Under the thesis **models propose, code decides**, each project section shows a working piece:
 
-* **Immersive Hero Section:** Interactive particle background and 3D CSS cube animation.
-* **"Deck of Cards" Scrolling:** Sticky positioning creates a unique layering effect as the user scrolls through sections.
-* **Interactive Data Visualization:** Custom Recharts implementation for skills with hover effects and responsive design.
-* **Dynamic Project Gallery:** Grid layout with hover-reveal details and "scan line" animations.
-* **Fully Responsive:** Optimized for mobile, tablet, and desktop devices.
-* **Performance Focused:** Built with Vite for instant server start and optimized production builds.
+- **LayGrounded** (flagship, confidential): an abstract pipeline animation of the principle only.
+- **Sophie**: an "ask about me" box that answers only from approved facts and abstains otherwise.
+- **MedBot**: a simulation of the three-layer language routing and the planner's checks.
+- **Nexus**: drag the scoring weights and watch listings re-rank.
+- **Metascribe**: a guided tour of the real review screen.
+- **Panhellenic**: an admission-probability slider on synthetic cutoffs.
 
-## 🛠️ Tech Stack
+## Stack
 
-* **Framework:** [React 19](https://react.dev/)
-* **Build Tool:** [Vite](https://vitejs.dev/)
-* **Language:** [TypeScript](https://www.typescriptlang.org/)
-* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-* **Icons:** [Lucide React](https://lucide.dev/)
-* **Charts:** [Recharts](https://recharts.org/)
+React 19, TypeScript, Vite, three.js, hand-written CSS and canvas, Archivo and JetBrains Mono (self-hosted), lucide-react icons. No UI framework.
 
-## 📂 Project Structure
+## Structure
 
-```bash
-src/
-├── components/       # UI Components (Hero, Navbar, Experience, etc.)
-├── constants.ts      # Data source for Resume, Skills, and Projects
-├── types.ts          # TypeScript interfaces
-├── App.tsx           # Main application layout
-├── index.css         # Global styles & Tailwind directives
-└── main.tsx          # Entry point
+```
+App.tsx              page order
+constants.ts         all content: profile, skills, projects, more work, record, approved facts
+lib/net.ts           hero network graph and layout
+lib/ask.ts           approved-facts matcher with abstention
+lib/medbot.ts        toy re-creation of MedBot routing and planner
+lib/admission.ts     logistic admission probability
+components/          Hero, Neural3D, NeuralCanvas, LatentField, PassRail, ProjectSection, MoreWork, RecordSection, Contact, demos/
+public/captures/     screenshots of the running apps (synthetic sample data)
+```
+
+## Develop and deploy
+
+```
+npm install
+npm run dev
+npm run deploy   # builds and publishes dist/ to gh-pages
+```
