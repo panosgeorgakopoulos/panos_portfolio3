@@ -1,12 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PG">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#00f0ff"/>
-      <stop offset="100%" stop-color="#bd00ff"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="#050505"/>
-  <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="url(#g)" stroke-width="2"/>
-  <text x="32" y="43" font-family="'Space Grotesk',ui-sans-serif,system-ui,sans-serif"
-        font-size="30" font-weight="700" text-anchor="middle" fill="url(#g)">PG</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#07080a"/><path d="M7 9 L16 16 L7 23 M16 16 L25 16" fill="none" stroke="#5a616b" stroke-width="1.6"/><circle cx="7" cy="9" r="2.6" fill="#07080a" stroke="#e8ecf0" stroke-width="1.4"/><circle cx="7" cy="23" r="2.6" fill="#07080a" stroke="#e8ecf0" stroke-width="1.4"/><circle cx="16" cy="16" r="3.2" fill="#07080a" stroke="#e8ecf0" stroke-width="1.4"/><circle cx="25" cy="16" r="3.8" fill="#c6f432"/></svg>
